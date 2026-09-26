@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="web_dashboard" name="shell-type" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <style>
+    @layer base {
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        overscroll-behavior: none;
+      }
+
+      main>:first-child {
+        margin-top: 0 !important;
+      }
+
+      main>:last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script
+    id="tailwind-config">tailwind.config = { "darkMode": "class", "theme": { "extend": { "colors": { "surface-container-highest": "#cbe7f5", "primary-container": "#0d47a1", "secondary": "#0061a4", "tertiary-container": "#005078", "tertiary-fixed": "#cbe6ff", "inverse-surface": "#19343e", "on-primary-fixed": "#001945", "surface-dim": "#c3deec", "on-primary": "#ffffff", "on-surface": "#021f29", "primary-fixed-dim": "#b0c6ff", "inverse-on-surface": "#dff4ff", "surface": "#f3faff", "inverse-primary": "#b0c6ff", "on-primary-fixed-variant": "#00429c", "surface-container-low": "#e6f6ff", "error": "#ba1a1a", "on-tertiary-fixed": "#001e30", "on-surface-variant": "#434652", "on-error": "#ffffff", "tertiary": "#003856", "on-tertiary-fixed-variant": "#004b71", "tertiary-fixed-dim": "#93cdfc", "surface-container-high": "#d1ecfa", "outline": "#737783", "on-secondary": "#ffffff", "on-error-container": "#93000a", "on-secondary-fixed": "#001d36", "surface-container-lowest": "#ffffff", "primary": "#003178", "surface-tint": "#2b5bb5", "secondary-fixed": "#d1e4ff", "error-container": "#ffdad6", "on-secondary-fixed-variant": "#00497d", "on-secondary-container": "#00355c", "surface-container": "#d8f2ff", "primary-fixed": "#d9e2ff", "secondary-fixed-dim": "#9ecaff", "surface-variant": "#cbe7f5", "on-tertiary-container": "#88c2f0", "background": "#f3faff", "on-background": "#021f29", "surface-bright": "#f3faff", "outline-variant": "#c3c6d4", "on-primary-container": "#a1bbff", "on-tertiary": "#ffffff", "secondary-container": "#33a0fd" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-lg": "1.5rem", "gutter-mobile": "1rem", "space-sm": "0.5rem", "space-md": "1rem", "margin": "2rem", "space-xl": "2rem", "space-xs": "0.25rem", "gutter": "1.5rem", "margin-mobile": "1rem" }, "fontFamily": { "headline-md": ["Plus Jakarta Sans"], "body-lg": ["Inter"], "display-mobile": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "body-md": ["Inter"], "label-md": ["Inter"], "label-sm": ["Inter"], "display": ["Plus Jakarta Sans"], "label-lg": ["Inter"], "headline-sm": ["Plus Jakarta Sans"], "body-sm": ["Inter"] }, "fontSize": { "headline-md": ["1.25rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-lg": ["1.125rem", { "lineHeight": "1.75rem", "fontWeight": "400" }], "display-mobile": ["2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.02em", "fontWeight": "800" }], "headline-lg": ["2rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-lg-mobile": ["1.5rem", { "lineHeight": "2rem", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-md": ["1rem", { "lineHeight": "1.5rem", "fontWeight": "400" }], "label-md": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.04em", "fontWeight": "700" }], "display": ["3rem", { "lineHeight": "3.5rem", "letterSpacing": "-0.03em", "fontWeight": "800" }], "label-lg": ["0.875rem", { "lineHeight": "1.25rem", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-sm": ["1.125rem", { "lineHeight": "1.5rem", "fontWeight": "600" }], "body-sm": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "400" }] } } } }</script>
+</head>
+
+<body class="bg-surface text-on-surface antialiased">
+  <aside
+    class="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col justify-between py-space-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="flex flex-col gap-space-lg">
+      <div class="flex items-center gap-space-sm px-space-lg"><img alt="Modern collegiate tech club icon logo, interconnected stylized C lettermark forming a graduation cap or shield community emblem, flat vector, deep blue #0D47A1 and bright blue #2196F3 on clean transparent background. Design context: - Primary color: #0d47a1
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+. The logo should be visually consistent with these brand tokens." class="h-8 w-auto object-contain"
+          src="https://lh3.googleusercontent.com/aida/AEtjO1X0C7vaufSr9LbwH_8BS03iTBrg9VBQAQ_SiyWceJNtn0FAiva99Igs8xsdV23XXdVmlFkD-EmtvDYC7-hcqZ5nWmu1ZpVxxeiMczea9pklfbbRAKeM2jmpcbGYDYwwmJc6CIb-XEOtRqnhlVgd7YqMeW-Xw8a4mdTlsWX8KL58BrlhAFwh2zLE_5nQS65FXM7Y5oxFbcSFD1oufylBtYrmZ7jgOfTruSeN55nv47DVBwqgonnCJJKvgf5z" /><span
+          class="font-headline-md text-headline-md text-primary tracking-tight">CampusClub</span></div>
+      <nav class="flex flex-col gap-space-xs px-space-md"
+        data-active-classes="bg-surface-container text-primary font-bold"><a
+          class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+          data-path="dashboard" href="#"><span
+            class="material-symbols-outlined text-secondary">dashboard</span><span>Dashboard</span></a><a
+          class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+          data-path="explore-clubs" href="#"><span
+            class="material-symbols-outlined text-secondary">explore</span><span>Explore Clubs</span></a><a
+          aria-current="page"
+          class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg transition-all bg-surface-container text-primary font-bold"
+          data-path="events" href="#"><span
+            class="material-symbols-outlined text-secondary">calendar_month</span><span>Events</span></a><a
+          class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+          data-path="club-workspace" href="#"><span
+            class="material-symbols-outlined text-secondary">hub</span><span>Club Workspace</span></a><a
+          class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+          data-path="analytics" href="#"><span
+            class="material-symbols-outlined text-secondary">analytics</span><span>Analytics</span></a><a
+          class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+          data-path="announcements" href="#"><span
+            class="material-symbols-outlined text-secondary">campaign</span><span>Announcements</span></a></nav>
+    </div>
+    <div class="flex flex-col gap-space-xs px-space-md">
+      <nav class="flex flex-col gap-space-xs" data-active-classes="bg-surface-container text-primary font-bold"><a
+          class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+          data-path="profile" href="#"><span
+            class="material-symbols-outlined text-secondary">person</span><span>Profile</span></a><a
+          class="flex items-center gap-space-md px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+          data-path="settings" href="#"><span
+            class="material-symbols-outlined text-secondary">settings</span><span>Settings</span></a></nav>
+      <div class="mt-space-sm p-space-sm bg-surface-container-high rounded-xl flex items-center justify-between">
+        <div class="flex items-center gap-space-sm">
+          <div class="w-2 h-2 rounded-full bg-secondary-container"></div><span
+            class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider">Student Exec</span>
+        </div><span class="material-symbols-outlined text-on-surface-variant text-base">verified</span>
+      </div>
+    </div>
+  </aside>
+  <div class="pl-64">
+    <header
+      class="fixed top-0 left-64 right-0 h-16 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-xl">
+      <div class="flex items-center gap-space-md w-96">
+        <div class="relative w-full"><span
+            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span><input
+            class="w-full pl-10 pr-space-md py-1.5 bg-surface-container-lowest rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-low"
+            placeholder="Search clubs, events, rosters..." type="text" /></div>
+      </div>
+      <div class="flex items-center gap-space-lg">
+        <div class="inline-flex items-center gap-space-xs px-space-md py-1 bg-surface-container rounded-full"><span
+            class="material-symbols-outlined text-primary text-base">school</span><span
+            class="font-label-sm text-label-sm text-primary">Fall 2025 Semester</span></div><button
+          class="relative p-space-xs text-on-surface-variant hover:text-on-surface transition-colors"
+          type="button"><span class="material-symbols-outlined">notifications</span><span
+            class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span></button>
+        <div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover"
+            src="https://lh3.googleusercontent.com/aida/AEtjO1Ui344i7mK5VRR3br5GmAMnmZQyzkRVGeTBRMbhABNw3dWuN2HNJCmljiowbGVN5BsPTk0DegjQDtvg9o9EkZ_mx1OBk2CL63PWlT2bcD8q-TSoGbG_mzX5DKP3kSMVtSYyyvhEWl4wOA2AtOMdplv7XKana9qt2jjva0nN5jBJ9W9IvvcBM3Nmmc0yemORANlkL6LuDbG5Cjq8lBCNBkdLNUEjqYYBfY3645lduLLth7N8hLdtNIClvb-B" />
+          <div class="flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface">Alex
+              Chen</span><span class="font-label-sm text-label-sm text-on-surface-variant">VP of Operations</span></div>
+        </div>
+      </div>
+    </header>
+    <main class="w-full pt-16 px-space-xl bg-surface min-h-screen">
+      <div class="flex flex-col w-full pb-space-xl">
+        <!-- Top Navigation & Action Strip -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md py-space-md mb-space-md">
+          <div class="flex flex-col gap-1">
+            <nav class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant">
+              <a class="hover:text-primary transition-colors" href="#">Events</a>
+              <span class="material-symbols-outlined text-xs text-outline-variant">chevron_right</span>
+              <a class="hover:text-primary transition-colors" href="#">Annual AI &amp; Cloud Summit 2025</a>
+              <span class="material-symbols-outlined text-xs text-outline-variant">chevron_right</span>
+              <span class="text-primary font-semibold">Ticket Pass</span>
+            </nav>
+            <div class="flex items-center gap-space-sm mt-0.5">
+              <span
+                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#E8F5E9] text-[#2E7D32] font-label-sm text-label-sm font-semibold tracking-wide uppercase">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#2E7D32] animate-pulse"></span>
+                Confirmed Ticket &amp; Fast-Track Access
+              </span>
+              <span class="text-on-surface-variant font-label-sm text-label-sm hidden sm:inline">• Seat Zone A-14</span>
+            </div>
+          </div>
+          <!-- Action Buttons -->
+          <div class="flex items-center flex-wrap gap-space-sm">
+            <button
+              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container-lowest text-primary font-label-lg text-label-lg shadow-sm hover:bg-surface-container transition-all"
+              id="shareBtn">
+              <span class="material-symbols-outlined text-secondary text-lg">share</span>
+              <span>Share Ticket</span>
+            </button>
+            <button
+              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container-lowest text-primary font-label-lg text-label-lg shadow-sm hover:bg-surface-container transition-all">
+              <span class="material-symbols-outlined text-secondary text-lg">event</span>
+              <span>Add to Google Calendar</span>
+            </button>
+            <button
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-container text-on-primary font-label-lg text-label-lg shadow-md hover:bg-primary transition-all">
+              <span class="material-symbols-outlined text-lg">download</span>
+              <span>Download PDF Ticket</span>
+            </button>
+          </div>
+        </div>
+        <!-- Main 2-Column Desktop Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+          <!-- LEFT COLUMN: High-Tech Digital Boarding Pass (5 cols on Desktop) -->
+          <div class="lg:col-span-5 flex flex-col gap-space-md sticky top-20">
+            <!-- Boarding Pass Main Card -->
+            <div class="relative bg-surface-container-lowest rounded-xl shadow-xl overflow-hidden">
+              <!-- Top Pass Header Ribbon -->
+              <div
+                class="bg-gradient-to-r from-primary via-primary-container to-secondary p-space-lg text-on-primary relative overflow-hidden">
+                <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none">
+                </div>
+                <div class="flex items-start justify-between relative z-10">
+                  <div>
+                    <span
+                      class="font-label-sm text-label-sm tracking-widest text-primary-fixed uppercase font-bold">CAMPUS
+                      BOARDING PASS</span>
+                    <h2 class="font-headline-lg text-headline-lg text-on-primary tracking-tight mt-0.5">All-Access Pass
+                    </h2>
+                    <p class="font-body-sm text-body-sm text-on-primary-container mt-0.5">AI &amp; Cloud Summit 2025</p>
+                  </div>
+                  <span
+                    class="px-2.5 py-1 rounded-full bg-surface-container-lowest/20 backdrop-blur-md text-on-primary font-label-sm text-label-sm font-bold uppercase tracking-wider">
+                    General Student
+                  </span>
+                </div>
+              </div>
+              <!-- Ticket Body Details -->
+              <div class="p-space-lg flex flex-col gap-space-md">
+                <!-- Attendee Lockup -->
+                <div class="flex items-center justify-between pb-space-sm">
+                  <div class="flex items-center gap-space-md">
+                    <div class="relative">
+                      <img class="w-14 h-14 rounded-full object-cover shadow-sm ring-2 ring-primary-fixed"
+                        data-alt="Portrait of Alex Chen, an ambitious Asian college computer science student smiling in modern tech campus setting, crisp daylight, wearing clean navy blue hoodie."
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQkh9KFfGUmDaNPS_sTAOhimj2pLmS0ikMJc90-5GYj3ulHHbQRAu-1PPSOk-eqyE3JIn0-GsvV-a6Y8Nxce14XOBkrL0_m8QBu5PNJz-A-bLEKyBZQi32Mb3VRSj_JfcFi0HkbPrDAxhjYkUwgvV5_1nkOROdFxYw7KT6ruLsDxfXE4qQeelWaDTxKnDP7bcU92lu93k9l5-5518ohOtx0kox2RO7Naq9oaTI4M-opOdoEESX5Tpzuw" />
+                      <span
+                        class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#2E7D32] rounded-full ring-2 ring-surface-container-lowest"></span>
+                    </div>
+                    <div>
+                      <span
+                        class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Attendee</span>
+                      <h3 class="font-headline-md text-headline-md text-primary tracking-tight">Alex Chen</h3>
+                      <p class="font-body-sm text-body-sm text-on-surface-variant font-medium">CS '26 • Member #4182</p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Fast Pass</span>
+                    <div
+                      class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded bg-surface-container-high text-primary font-label-md text-label-md font-bold">
+                      <span class="material-symbols-outlined text-sm">bolt</span> PRIORITY
+                    </div>
+                  </div>
+                </div>
+                <!-- Metadata 2x2 Grid -->
+                <div class="grid grid-cols-2 gap-space-sm p-space-md rounded-xl bg-surface-container-low">
+                  <div>
+                    <span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Registration
+                      ID</span>
+                    <p class="font-label-lg text-label-lg text-primary font-mono font-bold mt-0.5">#CC-EV-84920</p>
+                    <span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-[#2E7D32] mt-0.5">
+                      <span class="material-symbols-outlined text-xs">check_circle</span> Ready to Scan
+                    </span>
+                  </div>
+                  <div>
+                    <span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Date &amp;
+                      Schedule</span>
+                    <p class="font-label-lg text-label-lg text-on-surface font-semibold mt-0.5">Nov 14, 2025</p>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">10:00 AM – 4:30 PM EST</p>
+                  </div>
+                  <div class="col-span-2 pt-2">
+                    <span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Campus Venue</span>
+                    <p class="font-label-lg text-label-lg text-on-surface font-semibold mt-0.5 flex items-center gap-1">
+                      <span class="material-symbols-outlined text-secondary text-sm">location_on</span>
+                      Turing Hall, Campus Tech Hub 3F
+                    </p>
+                  </div>
+                </div>
+                <!-- Perforated Ticket Divider Illusion -->
+                <div class="relative py-2 flex items-center justify-between">
+                  <div class="absolute -left-10 w-6 h-6 rounded-full bg-surface"></div>
+                  <div class="w-full border-b-2 border-dashed border-outline-variant/50"></div>
+                  <div class="absolute -right-10 w-6 h-6 rounded-full bg-surface"></div>
+                </div>
+                <!-- Scannable High-Contrast QR Code Module -->
+                <div
+                  class="flex flex-col items-center justify-center p-space-md bg-surface-container-lowest rounded-xl shadow-inner text-center gap-space-sm">
+                  <div class="p-3 bg-white rounded-lg shadow-sm inline-block">
+                    <!-- High Fidelity Scannable Vector QR Representation -->
+                    <svg class="w-44 h-44 text-[#001945]" fill="currentColor" viewbox="0 0 160 160">
+                      <!-- Outer Markers -->
+                      <rect fill="none" height="40" rx="4" stroke="currentColor" stroke-width="6" width="40" x="10"
+                        y="10"></rect>
+                      <rect fill="currentColor" height="16" width="16" x="22" y="22"></rect>
+                      <rect fill="none" height="40" rx="4" stroke="currentColor" stroke-width="6" width="40" x="110"
+                        y="10"></rect>
+                      <rect fill="currentColor" height="16" width="16" x="122" y="22"></rect>
+                      <rect fill="none" height="40" rx="4" stroke="currentColor" stroke-width="6" width="40" x="10"
+                        y="110"></rect>
+                      <rect fill="currentColor" height="16" width="16" x="22" y="122"></rect>
+                      <!-- Tech Data Pixels & Matrix Blocks -->
+                      <rect height="8" width="8" x="60" y="15"></rect>
+                      <rect height="8" width="14" x="75" y="15"></rect>
+                      <rect height="8" width="8" x="95" y="25"></rect>
+                      <rect height="8" width="16" x="60" y="30"></rect>
+                      <rect height="15" width="8" x="80" y="35"></rect>
+                      <rect height="18" width="8" x="15" y="60"></rect>
+                      <rect height="8" width="14" x="30" y="65"></rect>
+                      <rect height="8" width="14" x="15" y="85"></rect>
+                      <rect height="18" width="8" x="35" y="80"></rect>
+                      <!-- Center High Entropy Pattern -->
+                      <rect height="10" width="10" x="55" y="55"></rect>
+                      <rect height="20" width="10" x="70" y="55"></rect>
+                      <rect height="10" width="20" x="85" y="55"></rect>
+                      <rect height="20" width="10" x="55" y="70"></rect>
+                      <rect height="10" width="25" x="70" y="80"></rect>
+                      <rect height="25" width="10" x="100" y="70"></rect>
+                      <rect height="10" width="20" x="55" y="95"></rect>
+                      <rect height="15" width="15" x="80" y="95"></rect>
+                      <rect height="8" width="12" x="115" y="60"></rect>
+                      <rect height="8" width="15" x="135" y="60"></rect>
+                      <rect height="18" width="8" x="120" y="75"></rect>
+                      <rect height="8" width="15" x="135" y="80"></rect>
+                      <rect height="10" width="10" x="115" y="100"></rect>
+                      <rect height="8" width="16" x="60" y="115"></rect>
+                      <rect height="18" width="8" x="85" y="115"></rect>
+                      <rect height="8" width="18" x="100" y="120"></rect>
+                      <rect height="15" width="10" x="60" y="130"></rect>
+                      <rect height="8" width="20" x="75" y="140"></rect>
+                      <rect height="20" width="8" x="125" y="125"></rect>
+                      <rect height="10" width="10" x="140" y="120"></rect>
+                      <rect height="10" width="15" x="135" y="135"></rect>
+                    </svg>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <span class="font-label-md text-label-md font-mono tracking-widest text-primary font-bold">8492 -
+                      0418 - 2025</span>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs mt-1 text-center">
+                      Present this QR pass at the entrance kiosk for instant badge printing and lunch voucher.
+                    </p>
+                  </div>
+                </div>
+                <!-- Pass Action Buttons -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm pt-space-xs">
+                  <button
+                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md font-bold transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-lg">wallet</span>
+                    <span>Apple / Google Wallet</span>
+                  </button>
+                  <button
+                    class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md font-bold transition-all shadow-sm"
+                    onclick="window.print()">
+                    <span class="material-symbols-outlined text-lg">print</span>
+                    <span>Print Badge</span>
+                  </button>
+                </div>
+                <!-- Micro Security Stamp -->
+                <div
+                  class="flex items-center justify-between pt-space-xs text-on-surface-variant/70 font-label-sm text-label-sm">
+                  <span>Cryptographic Sig: Validated SHA-256</span>
+                  <span class="flex items-center gap-1"><span
+                      class="material-symbols-outlined text-xs text-[#2E7D32]">verified_user</span> Encrypted</span>
+                </div>
+              </div>
+            </div>
+            <!-- Live Check-in Perk Box -->
+            <div class="bg-surface-container-high/60 rounded-xl p-space-md flex items-center justify-between shadow-sm">
+              <div class="flex items-center gap-space-sm">
+                <div
+                  class="w-10 h-10 rounded-full bg-secondary-container/30 flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined">restaurant</span>
+                </div>
+                <div>
+                  <h4 class="font-headline-sm text-headline-sm text-primary">Included: Bento &amp; Networking Social
+                  </h4>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">Redeemable at Tech Hub Atrium 12:45 PM
+                  </p>
+                </div>
+              </div>
+              <span
+                class="px-2.5 py-1 rounded bg-surface-container-lowest font-label-sm text-label-sm text-secondary font-bold">VOUCHER
+                ATTACHED</span>
+            </div>
+          </div>
+          <!-- RIGHT COLUMN: Event Content, Speakers, Agenda & Map (7 cols on Desktop) -->
+          <div class="lg:col-span-7 flex flex-col gap-space-lg">
+            <!-- Event Hero Banner Card -->
+            <div
+              class="relative bg-gradient-to-br from-primary via-primary-container to-secondary rounded-xl text-on-primary p-space-xl overflow-hidden shadow-lg">
+              <div
+                class="absolute right-0 top-0 translate-x-12 -translate-y-12 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none">
+              </div>
+              <div class="relative z-10 flex flex-col gap-space-sm max-w-xl">
+                <div
+                  class="inline-flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-surface-container-lowest/15 backdrop-blur-md w-fit">
+                  <span class="material-symbols-outlined text-sm text-tertiary-fixed">token</span>
+                  <span
+                    class="font-label-sm text-label-sm font-semibold tracking-wider text-tertiary-fixed uppercase">ACM ×
+                    GDG CAMPUS FLAGSHIP EVENT</span>
+                </div>
+                <h1 class="font-display text-display text-on-primary tracking-tight leading-tight">
+                  Annual AI &amp; Cloud Summit 2025
+                </h1>
+                <p class="font-body-md text-body-md text-primary-fixed leading-relaxed">
+                  Join over 600+ university engineers, cloud researchers, and industry pioneers for our most anticipated
+                  full-day technical symposium.
+                </p>
+                <div class="flex items-center gap-space-lg pt-space-xs">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary-fixed">group</span>
+                    <span class="font-label-md text-label-md text-on-primary">580 Attending</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary-fixed">badge</span>
+                    <span class="font-label-md text-label-md text-on-primary">Certificates Awarded</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary-fixed">laptop_mac</span>
+                    <span class="font-label-md text-label-md text-on-primary">Bring Laptop</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Keynote Speakers Section -->
+            <div class="flex flex-col gap-space-md">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="font-headline-lg text-headline-lg text-primary tracking-tight">Keynote Speakers</h3>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">Leading minds driving modern machine
+                    intelligence and scalable systems.</p>
+                </div>
+                <span class="font-label-md text-label-md text-secondary font-bold">2 Keynotes • 4 Labs</span>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+                <!-- Speaker 1 -->
+                <div
+                  class="bg-surface-container-lowest rounded-xl p-space-md shadow-md flex flex-col justify-between hover:shadow-lg transition-shadow">
+                  <div class="flex items-start gap-space-md">
+                    <img class="w-16 h-16 rounded-xl object-cover shadow-sm"
+                      data-alt="Portrait of Dr. Sarah Jenkins, Google Cloud Lead Architect, professional woman in mid 30s with wire glasses, friendly confident expression, softly lit high-tech studio background in cyan and navy blue."
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrfF22AahH_WkWqa5r-mutPlPzjKn0gKgzCzk8k-dpET8UzXTp7i-wplnuHkgNShrajDXY1UvRigL8yC3SmqDcOA7iR6AG2aSh50Vd-0EDk4VjiwhN_zCocNzUBXHzft61TQt6uP_U4otOWyXYtBe_jThZQzV1jgLlkaDuNuOV5CtjS6K4Be_IcCftFDwjZhnMeXt_9nTTNygqzvugrYU9FVrN5vaoHhDiAJ_YcdoCy7bVdTYSU5TXtQ" />
+                    <div class="min-w-0">
+                      <span
+                        class="px-2 py-0.5 rounded bg-surface-container text-primary font-label-sm text-label-sm font-bold uppercase">Google
+                        Cloud</span>
+                      <h4 class="font-headline-md text-headline-md text-primary mt-1 truncate">Dr. Sarah Jenkins</h4>
+                      <p class="font-body-sm text-body-sm text-on-surface-variant">Lead Architect, Vertex AI Systems</p>
+                    </div>
+                  </div>
+                  <div class="mt-space-md p-space-sm rounded-lg bg-surface-container-low">
+                    <span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Keynote
+                      Session</span>
+                    <p class="font-label-lg text-label-lg text-primary font-semibold mt-0.5">Scaling Distributed LLMs on
+                      Vertex AI &amp; TPU v5e</p>
+                    <div class="flex items-center gap-2 mt-1.5 text-on-surface-variant font-label-sm text-label-sm">
+                      <span class="material-symbols-outlined text-sm text-secondary">schedule</span> 11:15 AM - 12:15 PM
+                      • Main Stage
+                    </div>
+                  </div>
+                </div>
+                <!-- Speaker 2 -->
+                <div
+                  class="bg-surface-container-lowest rounded-xl p-space-md shadow-md flex flex-col justify-between hover:shadow-lg transition-shadow">
+                  <div class="flex items-start gap-space-md">
+                    <img class="w-16 h-16 rounded-xl object-cover shadow-sm"
+                      data-alt="Portrait of Prof. Marcus Sterling, Dean of Computing and Robotics, distinguished gentleman with trim beard and navy blazer in university research laboratory with robotics arms in soft focus background."
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxDfAxWTQbMuhA2z3SadClnQfrww-5WXoPSNuxGOmVyANf50fO_xQYnv9Gw5JZbXF1c9jWZF-WhPoi8nkncG-ialbEm8TjYygYuEtDA5znYHFEaZVcPufUaIY3QGy8bN3Oadr6t7TEhgQoa8KmthyJVs1cJkdwNrxby_9EhXXBHga-s93zClfFi_t5COZuulk_TT-Dz5VctkG6XoYSX8k9MWiKDGQzS_esAE7lDVu1eComBaZCWnwTsg" />
+                    <div class="min-w-0">
+                      <span
+                        class="px-2 py-0.5 rounded bg-surface-container text-primary font-label-sm text-label-sm font-bold uppercase">Dean
+                        of Computing</span>
+                      <h4 class="font-headline-md text-headline-md text-primary mt-1 truncate">Prof. Marcus Sterling
+                      </h4>
+                      <p class="font-body-sm text-body-sm text-on-surface-variant">Director, Autonomous AI Ethics Lab
+                      </p>
+                    </div>
+                  </div>
+                  <div class="mt-space-md p-space-sm rounded-lg bg-surface-container-low">
+                    <span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Keynote
+                      Session</span>
+                    <p class="font-label-lg text-label-lg text-primary font-semibold mt-0.5">Human-Centric AI Governance
+                      &amp; Security in 2026</p>
+                    <div class="flex items-center gap-2 mt-1.5 text-on-surface-variant font-label-sm text-label-sm">
+                      <span class="material-symbols-outlined text-sm text-secondary">schedule</span> 03:30 PM - 04:30 PM
+                      • Main Stage
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Interactive Event Schedule Timeline -->
+            <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-md flex flex-col gap-space-md">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-space-sm">
+                  <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-lg">calendar_month</span>
+                  </div>
+                  <div>
+                    <h3 class="font-headline-md text-headline-md text-primary">Summit Schedule Timeline</h3>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">November 14, 2025 • Turing Hall</p>
+                  </div>
+                </div>
+                <span
+                  class="px-3 py-1 rounded-full bg-surface-container text-primary font-label-sm text-label-sm font-bold">4
+                  Main Blocks</span>
+              </div>
+              <div class="flex flex-col gap-2 mt-2">
+                <!-- Timeline Row 1 -->
+                <div
+                  class="flex items-center gap-space-md p-space-sm rounded-lg hover:bg-surface-container-low transition-colors">
+                  <div class="w-24 text-right flex-shrink-0">
+                    <span class="font-label-lg text-label-lg text-primary font-bold font-mono">10:00 AM</span>
+                    <span class="block font-label-sm text-label-sm text-outline">45 mins</span>
+                  </div>
+                  <div class="w-3 h-3 rounded-full bg-secondary-container ring-4 ring-surface-container flex-shrink-0">
+                  </div>
+                  <div class="flex-1">
+                    <h5 class="font-headline-sm text-headline-sm text-on-surface">Registration, Fast-Pass Badge Print
+                      &amp; Morning Coffee</h5>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Welcome desk at Main Atrium. Pick up
+                      summit lanyard, stickers &amp; light breakfast.</p>
+                  </div>
+                  <span
+                    class="hidden sm:inline px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Atrium
+                    3F</span>
+                </div>
+                <!-- Timeline Row 2 -->
+                <div class="flex items-center gap-space-md p-space-sm rounded-lg bg-surface-container-low/70">
+                  <div class="w-24 text-right flex-shrink-0">
+                    <span class="font-label-lg text-label-lg text-primary font-bold font-mono">11:15 AM</span>
+                    <span class="block font-label-sm text-label-sm text-outline">60 mins</span>
+                  </div>
+                  <div class="w-3 h-3 rounded-full bg-primary ring-4 ring-primary-fixed flex-shrink-0"></div>
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                      <h5 class="font-headline-sm text-headline-sm text-primary font-bold">Opening Keynote: Distributed
+                        LLMs on Cloud</h5>
+                      <span
+                        class="px-1.5 py-0.5 rounded bg-primary text-on-primary font-label-sm text-[10px] uppercase font-bold">Featured</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Dr. Sarah Jenkins • Turing Auditorium
+                      304</p>
+                  </div>
+                  <span
+                    class="hidden sm:inline px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Auditorium
+                    304</span>
+                </div>
+                <!-- Timeline Row 3 -->
+                <div
+                  class="flex items-center gap-space-md p-space-sm rounded-lg hover:bg-surface-container-low transition-colors">
+                  <div class="w-24 text-right flex-shrink-0">
+                    <span class="font-label-lg text-label-lg text-primary font-bold font-mono">01:00 PM</span>
+                    <span class="block font-label-sm text-label-sm text-outline">90 mins</span>
+                  </div>
+                  <div class="w-3 h-3 rounded-full bg-secondary-container ring-4 ring-surface-container flex-shrink-0">
+                  </div>
+                  <div class="flex-1">
+                    <h5 class="font-headline-sm text-headline-sm text-on-surface">Networking Lunch &amp; Student Project
+                      Expo</h5>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Catered bento lunch in the garden
+                      terrace + 20 student hardware &amp; AI showcase booths.</p>
+                  </div>
+                  <span
+                    class="hidden sm:inline px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Terrace
+                    &amp; Hall B</span>
+                </div>
+                <!-- Timeline Row 4 -->
+                <div
+                  class="flex items-center gap-space-md p-space-sm rounded-lg hover:bg-surface-container-low transition-colors">
+                  <div class="w-24 text-right flex-shrink-0">
+                    <span class="font-label-lg text-label-lg text-primary font-bold font-mono">02:30 PM</span>
+                    <span class="block font-label-sm text-label-sm text-outline">75 mins</span>
+                  </div>
+                  <div class="w-3 h-3 rounded-full bg-secondary ring-4 ring-surface-container flex-shrink-0"></div>
+                  <div class="flex-1">
+                    <h5 class="font-headline-sm text-headline-sm text-on-surface">Hands-on Workshop Breakouts</h5>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant">Track A: Fine-tuning Gemini | Track B:
+                      Kubernetes Cluster Ops on Bare Metal.</p>
+                  </div>
+                  <span
+                    class="hidden sm:inline px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Lab
+                    308 &amp; 312</span>
+                </div>
+              </div>
+            </div>
+            <!-- Campus Venue Location & Mini Interactive Floor Map -->
+            <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-md flex flex-col gap-space-md">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary">apartment</span>
+                    <h3 class="font-headline-md text-headline-md text-primary">Campus Venue &amp; Navigation</h3>
+                  </div>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Campus Tech Hub 3F — Turing
+                    Auditorium Room 304</p>
+                </div>
+                <span
+                  class="px-2.5 py-1 rounded bg-[#E8F5E9] text-[#2E7D32] font-label-sm text-label-sm font-semibold uppercase flex items-center gap-1">
+                  <span class="material-symbols-outlined text-sm">directions_walk</span> Fast-Track Line Open
+                </span>
+              </div>
+              <!-- Venue Mini Architectural Map Layout (Schematic SVG Blueprint) -->
+              <div class="relative bg-surface-container-low rounded-xl p-space-md overflow-hidden">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-space-md">
+                  <!-- Floor Map SVG -->
+                  <div
+                    class="w-full sm:w-2/3 h-52 bg-surface-container-lowest rounded-lg p-2 relative shadow-inner flex items-center justify-center">
+                    <svg class="w-full h-full text-outline" fill="none" viewbox="0 0 400 180">
+                      <!-- Outer Walls -->
+                      <rect fill="#F3FAFF" height="140" rx="6" stroke="#C3C6D4" stroke-width="2" width="360" x="20"
+                        y="20"></rect>
+                      <!-- Hallway Corridor -->
+                      <path d="M 20 90 L 380 90" stroke="#90CAF9" stroke-linecap="round" stroke-width="12"></path>
+                      <!-- Room 301 & 302 (North side) -->
+                      <rect fill="#E6F6FF" height="50" rx="4" stroke="#C3C6D4" stroke-width="1.5" width="70" x="30"
+                        y="30"></rect>
+                      <text fill="#003178" font-family="Inter" font-size="9" font-weight="600" text-anchor="middle"
+                        x="65" y="58">Lab 301</text>
+                      <rect fill="#E6F6FF" height="50" rx="4" stroke="#C3C6D4" stroke-width="1.5" width="80" x="110"
+                        y="30"></rect>
+                      <text fill="#003178" font-family="Inter" font-size="9" font-weight="600" text-anchor="middle"
+                        x="150" y="58">Expo Room 302</text>
+                      <!-- TARGET VENUE: Turing Auditorium 304 -->
+                      <rect fill="#0D47A1" fill-opacity="0.12" height="50" rx="4" stroke="#0D47A1" stroke-width="2"
+                        width="170" x="200" y="30"></rect>
+                      <text fill="#003178" font-family="Plus Jakarta Sans" font-size="11" font-weight="700"
+                        text-anchor="middle" x="285" y="58">★ Turing Auditorium (304)</text>
+                      <!-- South Rooms: Gate B & Elevators -->
+                      <rect fill="#D1E4FF" height="50" rx="4" stroke="#0061A4" stroke-width="1.5" width="90" x="30"
+                        y="100"></rect>
+                      <text fill="#001D36" font-family="Inter" font-size="9" font-weight="700" text-anchor="middle"
+                        x="75" y="128">Gate B • North Elevators</text>
+                      <rect fill="#E6F6FF" height="50" rx="4" stroke="#C3C6D4" stroke-width="1.5" width="100" x="130"
+                        y="100"></rect>
+                      <text fill="#003178" font-family="Inter" font-size="9" font-weight="600" text-anchor="middle"
+                        x="180" y="128">Atrium Check-in</text>
+                      <rect fill="#E6F6FF" height="50" rx="4" stroke="#C3C6D4" stroke-width="1.5" width="130" x="240"
+                        y="100"></rect>
+                      <text fill="#003178" font-family="Inter" font-size="9" font-weight="600" text-anchor="middle"
+                        x="305" y="128">Garden Terrace (Lunch)</text>
+                      <!-- Animated Walking Route Indicator -->
+                      <path class="animate-pulse" d="M 75 100 L 75 90 L 285 90 L 285 82" fill="none" stroke="#2196F3"
+                        stroke-dasharray="6,4" stroke-width="3"></path>
+                      <!-- Destination Pin -->
+                      <circle cx="285" cy="80" fill="#0D47A1" r="5"></circle>
+                      <circle cx="285" cy="80" fill="#0D47A1" fill-opacity="0.3" r="10"></circle>
+                    </svg>
+                  </div>
+                  <!-- Gate Directions Info Box -->
+                  <div class="w-full sm:w-1/3 flex flex-col gap-space-sm">
+                    <div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm">
+                      <span class="font-label-sm text-label-sm text-outline uppercase font-bold">Recommended
+                        Entry</span>
+                      <p class="font-headline-sm text-headline-sm text-primary font-bold mt-0.5">Gate B — North Elevator
+                      </p>
+                      <p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Take Elevators to 3F. Exit
+                        right straight down central corridor to Room 304.</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-primary font-label-md text-label-md">
+                      <span class="material-symbols-outlined text-secondary text-base">accessible</span>
+                      <span>ADA Wheelchair Accessible</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-primary font-label-md text-label-md">
+                      <span class="material-symbols-outlined text-secondary text-base">wifi</span>
+                      <span>Campus SSID: <span class="font-mono font-bold">TechHub-Guest</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Footnote / Help desk -->
+              <div
+                class="flex items-center justify-between pt-space-xs text-on-surface-variant font-body-sm text-body-sm">
+                <span>Need special accommodations or badge corrections?</span>
+                <a class="text-secondary hover:underline font-label-md text-label-md font-bold flex items-center gap-1"
+                  href="#">
+                  Contact Event Ops Desk
+                  <span class="material-symbols-outlined text-sm">open_in_new</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Share Modal Micro-Interaction Script -->
+        <script>
+            (function () {
+              const shareBtn = document.getElementById('shareBtn');
+              if (shareBtn) {
+                shareBtn.addEventListener('click', async () => {
+                  if (navigator.share) {
+                    try {
+                      await navigator.share({
+                        title: 'Annual AI & Cloud Summit 2025 - All Access Pass',
+                        text: 'Fast-track entry ticket for Alex Chen (Registration #CC-EV-84920)',
+                        url: window.location.href,
+                      });
+                    } catch (err) {
+                      // fallback gracefully
+                    }
+                  } else {
+                    // copy link feedback
+                    navigator.clipboard.writeText(window.location.href);
+                    const originalText = shareBtn.innerHTML;
+                    shareBtn.innerHTML = '<span class="material-symbols-outlined text-secondary text-lg">done</span><span>Pass Link Copied!</span>';
+                    setTimeout(() => {
+                      shareBtn.innerHTML = originalText;
+                    }, 2500);
+                  }
+                });
+              }
+            })();
+        </script>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="web_standard" name="shell-type" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <style>
+    @layer base {
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        overscroll-behavior: none;
+      }
+
+      main> :first-child {
+        margin-top: 0 !important;
+      }
+
+      main> :last-child {
+        margin-bottom: 0 !important;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script
+    id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-container-high": "#d1ecfa", "on-secondary-fixed": "#001d36", "on-secondary-fixed-variant": "#00497d", "tertiary-fixed-dim": "#93cdfc", "secondary-fixed": "#d1e4ff", "tertiary": "#003856", "surface": "#f3faff", "inverse-on-surface": "#dff4ff", "primary": "#003178", "on-tertiary-container": "#88c2f0", "inverse-surface": "#19343e", "surface-tint": "#2b5bb5", "background": "#f3faff", "on-tertiary-fixed": "#001e30", "tertiary-container": "#005078", "surface-container-low": "#e6f6ff", "on-secondary": "#ffffff", "on-primary-fixed-variant": "#00429c", "on-error-container": "#93000a", "secondary-fixed-dim": "#9ecaff", "surface-bright": "#f3faff", "on-surface-variant": "#434652", "on-tertiary": "#ffffff", "surface-dim": "#c3deec", "on-primary": "#ffffff", "on-tertiary-fixed-variant": "#004b71", "on-surface": "#021f29", "tertiary-fixed": "#cbe6ff", "on-background": "#021f29", "secondary-container": "#33a0fd", "outline-variant": "#c3c6d4", "on-primary-fixed": "#001945", "surface-container": "#d8f2ff", "error-container": "#ffdad6", "secondary": "#0061a4", "on-error": "#ffffff", "surface-container-lowest": "#ffffff", "inverse-primary": "#b0c6ff", "outline": "#737783", "error": "#ba1a1a", "surface-container-highest": "#cbe7f5", "on-primary-container": "#a1bbff", "primary-fixed-dim": "#b0c6ff", "primary-container": "#0d47a1", "surface-variant": "#cbe7f5", "primary-fixed": "#d9e2ff", "on-secondary-container": "#00355c" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xs": "0.25rem", "space-xl": "2rem", "space-lg": "1.5rem", "gutter": "1.5rem", "space-md": "1rem", "margin-mobile": "1rem", "space-sm": "0.5rem", "margin": "2rem", "gutter-mobile": "1rem" }, "fontFamily": { "display-mobile": ["Plus Jakarta Sans"], "label-sm": ["Inter"], "headline-lg": ["Plus Jakarta Sans"], "body-md": ["Inter"], "body-sm": ["Inter"], "label-lg": ["Inter"], "headline-sm": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "body-lg": ["Inter"], "label-md": ["Inter"], "display": ["Plus Jakarta Sans"] }, "fontSize": { "display-mobile": ["2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.02em", "fontWeight": "800" }], "label-sm": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.04em", "fontWeight": "700" }], "headline-lg": ["2rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-md": ["1rem", { "lineHeight": "1.5rem", "fontWeight": "400" }], "body-sm": ["0.875rem", { "lineHeight": "1.25rem", "fontWeight": "400" }], "label-lg": ["0.875rem", { "lineHeight": "1.25rem", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-sm": ["1.125rem", { "lineHeight": "1.5rem", "fontWeight": "600" }], "headline-lg-mobile": ["1.5rem", { "lineHeight": "2rem", "letterSpacing": "-0.01em", "fontWeight": "700" }], "headline-md": ["1.25rem", { "lineHeight": "1.75rem", "letterSpacing": "-0.01em", "fontWeight": "600" }], "body-lg": ["1.125rem", { "lineHeight": "1.75rem", "fontWeight": "400" }], "label-md": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.02em", "fontWeight": "600" }], "display": ["3rem", { "lineHeight": "3.5rem", "letterSpacing": "-0.03em", "fontWeight": "800" }] } } } };</script>
+</head>
+
+<body class="bg-background font-body-md text-on-surface antialiased min-h-screen flex flex-col justify-between">
+  <header
+    class="fixed top-0 left-0 right-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="h-16 w-full px-margin flex items-center justify-between">
+      <div class="flex items-center gap-space-md"><img alt="Modern collegiate tech club icon logo, interconnected stylized C lettermark forming a graduation cap or shield community emblem, flat vector, deep blue #0D47A1 and bright blue #2196F3 on clean transparent background. Design context: - Primary color: #0d47a1
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+. The logo should be visually consistent with these brand tokens." class="h-8 w-auto object-contain"
+          src="https://lh3.googleusercontent.com/aida/AEtjO1X0C7vaufSr9LbwH_8BS03iTBrg9VBQAQ_SiyWceJNtn0FAiva99Igs8xsdV23XXdVmlFkD-EmtvDYC7-hcqZ5nWmu1ZpVxxeiMczea9pklfbbRAKeM2jmpcbGYDYwwmJc6CIb-XEOtRqnhlVgd7YqMeW-Xw8a4mdTlsWX8KL58BrlhAFwh2zLE_5nQS65FXM7Y5oxFbcSFD1oufylBtYrmZ7jgOfTruSeN55nv47DVBwqgonnCJJKvgf5z" /><span
+          class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">CampusClub</span>
+        <div
+          class="hidden sm:flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-surface-container text-on-secondary-container font-label-sm text-label-sm">
+          <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span><span>Fall 2025 Portal Live</span>
+        </div>
+      </div>
+      <nav class="flex items-center gap-space-md"
+        data-active-classes="bg-surface-container text-on-surface font-label-lg rounded-lg"><a
+          class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors"
+          data-path="help-center" href="#">Help Center</a><a
+          class="hidden md:inline-flex font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors"
+          data-path="system-status" href="#">System Status</a><a
+          class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors"
+          data-path="student-onboarding-faq" href="#">FAQ</a></nav>
+      <div class="flex items-center gap-space-sm"><img alt="Profile"
+          class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-container-high"
+          src="https://lh3.googleusercontent.com/aida/AEtjO1Ui344i7mK5VRR3br5GmAMnmZQyzkRVGeTBRMbhABNw3dWuN2HNJCmljiowbGVN5BsPTk0DegjQDtvg9o9EkZ_mx1OBk2CL63PWlT2bcD8q-TSoGbG_mzX5DKP3kSMVtSYyyvhEWl4wOA2AtOMdplv7XKana9qt2jjva0nN5jBJ9W9IvvcBM3Nmmc0yemORANlkL6LuDbG5Cjq8lBCNBkdLNUEjqYYBfY3645lduLLth7N8hLdtNIClvb-B" />
+      </div>
+    </div>
+  </header>
+  <main class="w-full pt-16 flex-1 flex flex-col justify-center items-center px-margin-mobile sm:px-margin">
+    <div
+      class="flex flex-col w-full relative min-h-[calc(100vh-4rem)] items-center justify-center p-space-md sm:p-space-xl overflow-hidden">
+      <div
+        class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-secondary-container/20 blur-3xl pointer-events-none">
+      </div>
+      <div
+        class="absolute top-1/2 -right-24 w-[28rem] h-[28rem] rounded-full bg-surface-tint/15 blur-[100px] pointer-events-none">
+      </div>
+      <div
+        class="absolute -bottom-24 left-1/3 w-80 h-80 rounded-full bg-secondary-fixed-dim/30 blur-[90px] pointer-events-none">
+      </div>
+      <div
+        class="w-full max-w-5xl my-auto rounded-xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 bg-surface-container-lowest/80 backdrop-blur-2xl relative z-10 transition-all duration-300">
+        <div
+          class="lg:col-span-5 bg-gradient-to-br from-primary via-primary to-primary-container p-space-lg lg:p-space-xl flex flex-col justify-between relative overflow-hidden text-on-primary">
+          <div
+            class="absolute -right-16 -top-16 w-56 h-56 bg-secondary-container/20 rounded-full blur-2xl pointer-events-none">
+          </div>
+          <div
+            class="absolute -left-12 -bottom-12 w-48 h-48 bg-surface-tint/30 rounded-full blur-xl pointer-events-none">
+          </div>
+          <div class="relative z-10 flex flex-col gap-space-lg">
+            <div
+              class="inline-flex items-center gap-space-xs self-start px-space-sm py-1 rounded-full bg-on-primary/10 backdrop-blur-md text-on-primary font-label-sm text-label-sm tracking-wider uppercase">
+              <span class="material-symbols-outlined text-secondary-container text-sm">verified</span>
+              <span>Official Campus Portal • Shibboleth SSO</span>
+            </div>
+            <div class="space-y-space-sm">
+              <h2 class="font-headline-lg text-headline-lg tracking-tight font-bold text-on-primary">
+                One Campus ID.<br />Endless Opportunities.
+              </h2>
+              <p class="font-body-md text-body-md text-primary-fixed-dim leading-relaxed">
+                Access 84+ chartered student organizations, executive workspaces, verified campus event passes, and
+                annual budget governance.
+              </p>
+            </div>
+            <div class="p-space-md rounded-xl bg-on-primary/10 backdrop-blur-xl shadow-sm text-on-primary relative">
+              <div class="flex items-center gap-space-sm mb-space-xs">
+                <img alt="Alex Chen" class="w-10 h-10 rounded-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida/AEtjO1Ui344i7mK5VRR3br5GmAMnmZQyzkRVGeTBRMbhABNw3dWuN2HNJCmljiowbGVN5BsPTk0DegjQDtvg9o9EkZ_mx1OBk2CL63PWlT2bcD8q-TSoGbG_mzX5DKP3kSMVtSYyyvhEWl4wOA2AtOMdplv7XKana9qt2jjva0nN5jBJ9W9IvvcBM3Nmmc0yemORANlkL6LuDbG5Cjq8lBCNBkdLNUEjqYYBfY3645lduLLth7N8hLdtNIClvb-B" />
+                <div>
+                  <div class="font-label-lg text-label-lg font-bold leading-tight">Alex Chen</div>
+                  <div class="font-label-sm text-label-sm text-primary-fixed-dim">ACM Chapter Vice President</div>
+                </div>
+              </div>
+              <p class="font-body-sm text-body-sm text-primary-fixed italic">
+                “CampusClub cut our annual hackathon roster verification and SAF funding allocations from 3 weeks down
+                to 10 minutes.”
+              </p>
+            </div>
+            <div class="grid grid-cols-2 gap-space-sm">
+              <div class="p-space-sm rounded-lg bg-on-primary/5 backdrop-blur-md">
+                <div class="font-headline-sm text-headline-sm font-bold text-on-primary">2,500+</div>
+                <div class="font-label-sm text-label-sm text-primary-fixed-dim">Active Undergrads</div>
+              </div>
+              <div class="p-space-sm rounded-lg bg-on-primary/5 backdrop-blur-md">
+                <div class="font-headline-sm text-headline-sm font-bold text-on-primary">120+</div>
+                <div class="font-label-sm text-label-sm text-primary-fixed-dim">Annual Events</div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="relative z-10 pt-space-lg flex items-center justify-between font-label-sm text-label-sm text-primary-fixed-dim">
+            <div class="flex items-center gap-space-xs">
+              <span class="material-symbols-outlined text-secondary-container text-base">lock</span>
+              <span>FERPA 256-Bit SSL</span>
+            </div>
+            <div class="flex items-center gap-space-xs">
+              <span class="material-symbols-outlined text-secondary-container text-base">domain_verification</span>
+              <span>InCommon Federate</span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="lg:col-span-7 p-space-lg sm:p-space-xl flex flex-col justify-between bg-surface-container-lowest/60 backdrop-blur-xl relative">
+          <div>
+            <div class="flex items-center justify-between gap-space-sm mb-space-lg">
+              <div class="inline-flex p-1 bg-surface-container rounded-lg">
+                <button
+                  class="px-space-md py-1.5 rounded bg-surface-container-lowest text-primary font-label-lg text-label-lg shadow-sm font-bold transition-all"
+                  id="tab-signin">
+                  Sign In
+                </button>
+                <button
+                  class="px-space-md py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-lg text-label-lg transition-all"
+                  id="tab-signup">
+                  Create Account
+                </button>
+              </div>
+              <div class="flex items-center gap-space-xs text-secondary font-label-sm text-label-sm font-semibold">
+                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                <span>Auth v3.4 Active</span>
+              </div>
+            </div>
+            <button
+              class="w-full flex items-center justify-center gap-space-sm py-space-sm px-space-md rounded-lg bg-surface-container-high hover:bg-surface-container text-on-surface font-label-lg text-label-lg font-bold shadow-sm transition-all duration-150 active:scale-[0.99]">
+              <span class="material-symbols-outlined text-primary text-xl">shield_lock</span>
+              <span>Single Sign-On with University ID</span>
+            </button>
+            <div class="relative my-space-md flex items-center justify-center">
+              <div class="w-full h-px bg-surface-container-high"></div>
+              <span
+                class="absolute bg-surface-container-lowest px-space-sm text-on-surface-variant font-label-sm text-label-sm">
+                or continue with credentials
+              </span>
+            </div>
+            <form class="space-y-space-md" id="auth-form" onsubmit="event.preventDefault();">
+              <div class="space-y-space-xs">
+                <label class="block font-label-md text-label-md font-semibold text-on-surface" for="campus-email">
+                  Institutional Email
+                </label>
+                <div class="relative flex items-center">
+                  <span
+                    class="material-symbols-outlined absolute left-3 text-outline text-lg pointer-events-none">alternate_email</span>
+                  <input
+                    class="w-full pl-10 pr-3 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm shadow-sm placeholder:text-outline focus:outline-none focus:bg-surface-container-low transition-colors"
+                    id="campus-email" placeholder="netid@university.edu" required="" type="email" />
+                </div>
+                <span class="block font-label-sm text-label-sm text-on-surface-variant">Must end in standard campus
+                  accreditation (.edu / .ca / .ac)</span>
+              </div>
+              <div class="space-y-space-xs">
+                <div class="flex items-center justify-between">
+                  <label class="block font-label-md text-label-md font-semibold text-on-surface" for="campus-password">
+                    Campus Password
+                  </label>
+                  <a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors font-semibold"
+                    href="#">
+                    Forgot password?
+                  </a>
+                </div>
+                <div class="relative flex items-center">
+                  <span
+                    class="material-symbols-outlined absolute left-3 text-outline text-lg pointer-events-none">key</span>
+                  <input
+                    class="w-full pl-10 pr-10 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm shadow-sm placeholder:text-outline focus:outline-none focus:bg-surface-container-low transition-colors"
+                    id="campus-password" placeholder="••••••••••••" required="" type="password" />
+                  <button aria-label="Toggle password visibility"
+                    class="absolute right-3 text-outline hover:text-on-surface transition-colors p-1"
+                    id="toggle-password" type="button">
+                    <span class="material-symbols-outlined text-lg" id="pwd-icon">visibility</span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between pt-1">
+                <label class="flex items-center gap-space-sm cursor-pointer select-none">
+                  <input checked="" class="w-4 h-4 rounded text-primary focus:ring-secondary accent-primary"
+                    type="checkbox" />
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">Trust this terminal for 30
+                    days</span>
+                </label>
+                <span
+                  class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-high text-on-secondary-container">2FA
+                  Required</span>
+              </div>
+              <button
+                class="w-full py-3 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-bold shadow-md transition-all duration-150 flex items-center justify-center gap-space-sm group active:scale-[0.99]"
+                type="submit">
+                <span>Authenticate to Dashboard</span>
+                <span
+                  class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+              </button>
+            </form>
+          </div>
+          <div class="mt-space-lg pt-space-md border-t-0 space-y-space-sm">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-space-xs text-center sm:text-left">
+              <div class="font-label-sm text-label-sm text-on-surface-variant">
+                New organization executive or faculty advisor?
+              </div>
+              <a class="font-label-sm text-label-sm text-secondary hover:text-primary font-bold flex items-center gap-0.5"
+                href="#">
+                <span>Advisor Registration</span>
+                <span class="material-symbols-outlined text-xs">north_east</span>
+              </a>
+            </div>
+            <div class="flex items-center justify-center gap-space-xs font-label-sm text-label-sm text-outline">
+              <span class="material-symbols-outlined text-xs">security</span>
+              <span>Protected via Duo Two-Factor &amp; Hardware Token Integration</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        const tabSignIn = document.getElementById('tab-signin');
+        const tabSignUp = document.getElementById('tab-signup');
+        const togglePassword = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('campus-password');
+        const pwdIcon = document.getElementById('pwd-icon');
+
+        if (tabSignIn && tabSignUp) {
+          tabSignIn.addEventListener('click', function () {
+            tabSignIn.className = 'px-space-md py-1.5 rounded bg-surface-container-lowest text-primary font-label-lg text-label-lg shadow-sm font-bold transition-all';
+            tabSignUp.className = 'px-space-md py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-lg text-label-lg transition-all';
+          });
+
+          tabSignUp.addEventListener('click', function () {
+            tabSignUp.className = 'px-space-md py-1.5 rounded bg-surface-container-lowest text-primary font-label-lg text-label-lg shadow-sm font-bold transition-all';
+            tabSignIn.className = 'px-space-md py-1.5 rounded text-on-surface-variant hover:text-on-surface font-label-lg text-label-lg transition-all';
+          });
+        }
+
+        if (togglePassword && passwordInput && pwdIcon) {
+          togglePassword.addEventListener('click', function () {
+            const isPassword = passwordInput.getAttribute('type') === 'password';
+            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+            pwdIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+          });
+        }
+      })();
+    </script>
+  </main>
+  <footer class="w-full bg-surface-container-low py-space-md shadow-[0_-1px_8px_rgba(0,0,0,0.02)]">
+    <div
+      class="w-full px-margin flex flex-col md:flex-row items-center justify-between gap-space-sm text-center md:text-left">
+      <div class="flex items-center gap-space-sm font-label-md text-label-md text-on-surface-variant"><span
+          class="material-symbols-outlined text-secondary text-sm">verified_user</span><span>256-Bit SSL Encrypted
+          Campus Security</span><span class="hidden sm:inline text-outline-variant">•</span><span
+          class="hidden sm:inline">FERPA Compliant Organization Management</span></div>
+      <div class="flex items-center gap-space-md font-label-md text-label-md text-on-surface-variant"><a
+          class="hover:text-primary transition-colors" data-path="ferpa-compliance" href="#">FERPA Disclosure</a><a
+          class="hover:text-primary transition-colors" data-path="privacy-policy" href="#">Privacy Policy</a><a
+          class="hover:text-primary transition-colors" data-path="acceptable-use-policy" href="#">Acceptable
+          Use</a><span class="text-outline-variant">© 2025 Collegiate Network</span></div>
+    </div>
+  </footer>
+</body>
+
+</html>
