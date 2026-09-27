@@ -1,7 +1,8 @@
-export type UserRole = 'STUDENT' | 'CLUB_MEMBER' | 'EXECUTIVE' | 'CLUB_HEAD';
+export type UserRole = 'STUDENT' | 'CLUB_MEMBER' | 'EXECUTIVE' | 'CLUB_HEAD' | 'ADMIN';
 
 export interface User {
   id: string;
+  username: string;
   full_name: string;
   email: string;
   profile_image?: string | null;
@@ -14,21 +15,24 @@ export interface User {
 }
 
 export interface RegisterData {
+  username?: string;
   full_name: string;
   email: string;
   password: string;
   department?: string;
   year?: number;
+  role?: UserRole;
 }
 
 export interface LoginCredentials {
-  email: string;
+  identifier?: string;
+  email?: string;
   password: string;
 }
 
 export interface ChangePasswordData {
-  current_password: str;
-  new_password: str;
+  current_password: string;
+  new_password: string;
 }
 
 export interface TokenResponse {

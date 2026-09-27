@@ -56,6 +56,12 @@ export default function HomePage() {
                     Sign In
                   </Button>
                 </Link>
+                <Link href="/login">
+                  <Button size="lg" className="bg-rose-600 hover:bg-rose-700 text-white font-bold gap-1.5 shadow-lg border border-rose-400">
+                    <span className="material-symbols-outlined text-lg">admin_panel_settings</span>
+                    Login as Admin
+                  </Button>
+                </Link>
               </>
             )}
           </div>

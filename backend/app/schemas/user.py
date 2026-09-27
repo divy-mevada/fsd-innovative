@@ -7,11 +7,21 @@ from app.models.user import UserRole
 
 
 class UserRegister(BaseModel):
-    full_name: str = Field(..., min_length=2, max_length=100, description="Full name of the student or executive")
-    email: EmailStr = Field(..., description="University email address")
+    username: str = Field(..., min_length=3, max_length=50, description="Unique username")
+    full_name: str = Field(..., min_length=2, max_length=100, description="Full name of the user")
+    email: EmailStr = Field(..., description="University or personal email address")
     password: str = Field(..., min_length=8, description="Password must be at least 8 characters long")
     department: Optional[str] = Field(None, max_length=100)
     year: Optional[int] = Field(None, ge=1, le=6, description="Academic year (1-6)")
+    role: Optional[UserRole] = Field(UserRole.STUDENT, description="User role (STUDENT, CLUB_MEMBER, EXECUTIVE, CLUB_HEAD, ADMIN)")
+
+    @field_validator("username")
+    @classmethod
+    def validate_username(cls, v: str) -> str:
+        clean = v.strip()
+        if not re.match(r"^[a-zA-Z0-9_.]+$", clean):
+            raise ValueError("Username can only contain letters, numbers, underscores, and dots.")
+        return clean.lower()
 
     @field_validator("password")
     @classmethod
@@ -26,12 +36,13 @@ class UserRegister(BaseModel):
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+    identifier: str = Field(..., description="Username or Email address")
+    password: str = Field(..., description="User password")
 
 
 class UserResponse(BaseModel):
     id: uuid.UUID
+    username: str
     full_name: str
     email: EmailStr
     profile_image: Optional[str] = None

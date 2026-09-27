@@ -5,21 +5,26 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { AddClubModal } from '@/components/AddClubModal';
+import { UserRole } from '@/types/auth';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  allowedRoles?: UserRole[];
 }
 
-export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, allowedRoles }) => {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAddClubOpen, setIsAddClubOpen] = useState(false);
 
   const isActive = (path: string) => pathname === path;
+  const isAdminOrExec = user?.role === 'ADMIN' || user?.role === 'CLUB_HEAD' || user?.role === 'EXECUTIVE';
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute allowedRoles={allowedRoles}>
       <div className="bg-surface text-on-surface antialiased min-h-screen">
         {/* Left Sidebar */}
         <aside className="fixed left-0 top-0 h-full w-64 bg-surface-container-low z-50 flex flex-col justify-between py-space-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
@@ -33,6 +38,21 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                 CampusClub
               </span>
             </div>
+
+            {/* Quick Action: Add New Club Button (Admin / Exec Only) */}
+            {isAdminOrExec && (
+              <div className="px-space-md">
+                <button
+                  onClick={() => setIsAddClubOpen(true)}
+                  className="w-full py-2.5 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-bold shadow-md transition-all flex items-center justify-center gap-space-xs group active:scale-[0.98]"
+                >
+                  <span className="material-symbols-outlined text-lg transition-transform group-hover:rotate-90 duration-200">
+                    add_circle
+                  </span>
+                  <span>+ Register New Club</span>
+                </button>
+              </div>
+            )}
 
             {/* Navigation Links */}
             <nav className="flex flex-col gap-space-xs px-space-md">
@@ -72,6 +92,46 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                 <span>Events</span>
               </Link>
 
+              {/* Admin Panel Sections (Restricted to Admins / Club Heads / Executives) */}
+              {isAdminOrExec && (
+                <div className="pt-space-xs my-space-xs border-t border-surface-container-high">
+                  <span className="px-space-md text-[10px] font-bold text-outline uppercase tracking-wider block mb-1">
+                    Admin & Governance
+                  </span>
+                  <Link
+                    href="/admin"
+                    className={`flex items-center justify-between px-space-md py-space-sm rounded-lg transition-all ${
+                      isActive('/admin')
+                        ? 'bg-surface-container text-primary font-bold shadow-sm'
+                        : 'font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                    }`}
+                  >
+                    <div className="flex items-center gap-space-md">
+                      <span className="material-symbols-outlined text-secondary">admin_panel_settings</span>
+                      <span>Admin Panel</span>
+                    </div>
+                    <span className="w-2 h-2 rounded-full bg-secondary-container"></span>
+                  </Link>
+
+                  <Link
+                    href="/admin/clubs"
+                    className={`flex items-center justify-between px-space-md py-space-sm rounded-lg transition-all ${
+                      isActive('/admin/clubs')
+                        ? 'bg-surface-container text-primary font-bold shadow-sm'
+                        : 'font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                    }`}
+                  >
+                    <div className="flex items-center gap-space-md">
+                      <span className="material-symbols-outlined text-secondary">domain_verification</span>
+                      <span>Manage Clubs</span>
+                    </div>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-surface-container-high text-primary">
+                      + Add
+                    </span>
+                  </Link>
+                </div>
+              )}
+
               <Link
                 href="/profile"
                 className={`flex items-center gap-space-md px-space-md py-space-sm rounded-lg transition-all ${
@@ -81,7 +141,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                 }`}
               >
                 <span className="material-symbols-outlined text-secondary">person</span>
-                <span>Profile</span>
+                <span>Profile Settings</span>
               </Link>
             </nav>
           </div>
@@ -128,6 +188,17 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             </div>
 
             <div className="flex items-center gap-space-lg">
+              {/* Header Quick Add Button (Admin / Exec Only) */}
+              {isAdminOrExec && (
+                <button
+                  onClick={() => setIsAddClubOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-container text-primary font-label-md text-label-md font-bold transition-all shadow-sm"
+                >
+                  <span className="material-symbols-outlined text-base">add_circle</span>
+                  <span>Add Club</span>
+                </button>
+              )}
+
               <div className="inline-flex items-center gap-space-xs px-space-md py-1 bg-surface-container rounded-full">
                 <span className="material-symbols-outlined text-primary text-base">school</span>
                 <span className="font-label-sm text-label-sm text-primary font-bold">Fall 2025 Semester</span>
@@ -162,6 +233,17 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
             {children}
           </main>
         </div>
+
+        {/* Global Add Club Modal */}
+        {isAdminOrExec && (
+          <AddClubModal
+            isOpen={isAddClubOpen}
+            onClose={() => setIsAddClubOpen(false)}
+            onSuccess={() => {
+              router.push('/clubs');
+            }}
+          />
+        )}
       </div>
     </ProtectedRoute>
   );

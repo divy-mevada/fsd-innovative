@@ -9,6 +9,16 @@ from app.db.session import engine, Base
 # Create tables automatically on startup (for quick local setup & SQLite dev)
 Base.metadata.create_all(bind=engine)
 
+# Seed initial admin user if not exists
+from app.db.session import SessionLocal
+from app.db.init_db import init_db
+
+try:
+    with SessionLocal() as db_session:
+        init_db(db_session)
+except Exception as e:
+    print(f"Warning: Failed to seed admin user on startup: {e}")
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,

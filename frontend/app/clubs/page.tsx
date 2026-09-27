@@ -1,103 +1,25 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
-
-interface ClubItem {
-  id: string;
-  name: string;
-  category: string;
-  badge: string;
-  dept: string;
-  description: string;
-  members: number;
-  perYr: string;
-  tagline: string;
-  bgIcon: string;
-}
-
-const clubsData: ClubItem[] = [
-  {
-    id: 'c1',
-    name: 'ACM Student Chapter',
-    category: 'Technical',
-    badge: 'Top 1% Chapter',
-    dept: 'Dept. of Computer Science',
-    description: 'Premier coding and algorithmic society hosting annual hackathons, competitive programming sprints, and peer-to-peer engineering tutoring.',
-    members: 340,
-    perYr: '14 / Yr',
-    tagline: 'Co-ed • Open',
-    bgIcon: 'terminal',
-  },
-  {
-    id: 'c2',
-    name: 'Hyperion Design & Media',
-    category: 'Arts & Media',
-    badge: 'Showcase 2025',
-    dept: 'School of Arts & Architecture',
-    description: 'UI/UX design, generative motion graphics, student magazine art direction, and campus branding collective supporting student initiatives.',
-    members: 195,
-    perYr: '8 / Yr',
-    tagline: 'Portfolio Review',
-    bgIcon: 'draw',
-  },
-  {
-    id: 'c3',
-    name: 'RoboVanguard Robotics',
-    category: 'Technical',
-    badge: 'National #3 Rank',
-    dept: 'College of Engineering',
-    description: 'Autonomous rover systems, aerial drone engineering, embedded microcontrollers, and multi-tier collegiate championship competitions.',
-    members: 220,
-    perYr: '11 / Yr',
-    tagline: 'Makerspace Access',
-    bgIcon: 'smart_toy',
-  },
-  {
-    id: 'c4',
-    name: 'Collegiate E-Cell',
-    category: 'Entrepreneurship',
-    badge: 'Incubator Partner',
-    dept: 'School of Management & Tech',
-    description: 'Campus venture incubator providing seed grants, founder fireside chats, angel demo days, and legal compliance workshops for student ventures.',
-    members: 280,
-    perYr: '9 / Yr',
-    tagline: 'Seed Funding',
-    bgIcon: 'rocket_launch',
-  },
-  {
-    id: 'c5',
-    name: 'Campus Sports & Athletics',
-    category: 'Sports',
-    badge: 'State League',
-    dept: 'Department of Physical Ed',
-    description: 'Inter-departmental leagues, indoor badminton, football championships, and athletic conditioning bootcamps for student athletes.',
-    members: 410,
-    perYr: '20 / Yr',
-    tagline: 'All Skill Levels',
-    bgIcon: 'sports_volleyball',
-  },
-  {
-    id: 'c6',
-    name: 'Symphony Cultural Guild',
-    category: 'Cultural',
-    badge: 'Annual Fest Lead',
-    dept: 'School of Performing Arts',
-    description: 'Vocal ensembles, theatrical stage plays, instrumental bands, and the central organizing committee for the university cultural festival.',
-    members: 310,
-    perYr: '15 / Yr',
-    tagline: 'Auditions Open',
-    bgIcon: 'theater_comedy',
-  }
-];
+import { useClubsStore, ClubItem } from '@/lib/clubs-store';
+import { AddClubModal } from '@/components/AddClubModal';
 
 export default function ClubsPage() {
+  const { clubs, refreshClubs } = useClubsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [joinedClubIds, setJoinedClubIds] = useState<string[]>(['c1']);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleUpdate = () => refreshClubs();
+    window.addEventListener('campusclub_clubs_updated', handleUpdate);
+    return () => window.removeEventListener('campusclub_clubs_updated', handleUpdate);
+  }, [refreshClubs]);
 
   const filteredClubs = useMemo(() => {
-    return clubsData.filter((club) => {
+    return clubs.filter((club) => {
       const matchesSearch =
         club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         club.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -109,7 +31,7 @@ export default function ClubsPage() {
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [clubs, searchQuery, selectedCategory]);
 
   const toggleJoin = (id: string) => {
     setJoinedClubIds((prev) =>
@@ -130,9 +52,9 @@ export default function ClubsPage() {
                   Chartered Directory • Fall 2025
                 </span>
               </div>
-              <div className="hidden md:flex items-center gap-space-sm text-on-surface-variant font-label-md text-label-md font-semibold">
+              <div className="flex items-center gap-space-sm text-on-surface-variant font-label-md text-label-md font-semibold">
                 <span className="material-symbols-outlined text-secondary text-base">verified_user</span>
-                <span>84 Active Student Charters</span>
+                <span>{clubs.length} Active Student Charters</span>
               </div>
             </div>
 
@@ -142,9 +64,18 @@ export default function ClubsPage() {
                   Collegiate Organizations Directory
                 </h1>
                 <p className="font-body-md text-body-md text-on-surface-variant mt-1">
-                  Explore 84 chartered student clubs, societies, and tech chapters across campus. Connect with executive leads and join student communities.
+                  Explore {clubs.length} chartered student clubs, societies, and tech chapters across campus. Connect with executive leads and join student communities.
                 </p>
               </div>
+
+              {/* Add New Club Action Button */}
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="px-space-md py-2.5 bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg rounded-lg shadow-md transition-all duration-200 flex items-center gap-space-xs font-bold active:scale-[0.98] whitespace-nowrap self-start lg:self-end"
+              >
+                <span className="material-symbols-outlined text-base">add_circle</span>
+                <span>+ Register New Club</span>
+              </button>
             </div>
 
             {/* Search Bar & Controls */}
@@ -166,12 +97,13 @@ export default function ClubsPage() {
             {/* Category Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mb-1 scrollbar-none pt-space-xs">
               {[
-                { label: 'All (84)', value: 'all' },
-                { label: 'Technical (28)', value: 'technical' },
-                { label: 'Arts & Media (8)', value: 'arts' },
-                { label: 'Entrepreneurship (12)', value: 'entrepreneurship' },
-                { label: 'Sports (14)', value: 'sports' },
-                { label: 'Cultural (16)', value: 'cultural' },
+                { label: `All (${clubs.length})`, value: 'all' },
+                { label: 'Technical', value: 'technical' },
+                { label: 'Arts & Media', value: 'arts' },
+                { label: 'Entrepreneurship', value: 'entrepreneurship' },
+                { label: 'Sports', value: 'sports' },
+                { label: 'Cultural', value: 'cultural' },
+                { label: 'Hardware', value: 'hardware' },
               ].map((pill) => (
                 <button
                   key={pill.value}
@@ -257,6 +189,15 @@ export default function ClubsPage() {
             );
           })}
         </div>
+
+        {/* Modal for Adding New Club */}
+        <AddClubModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onSuccess={() => {
+            refreshClubs();
+          }}
+        />
       </div>
     </DashboardLayout>
   );

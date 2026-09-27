@@ -1,127 +1,154 @@
 """
-Standalone Test Script for CampusClub Backend Authentication Flow.
-Run this script to verify DB operations, password hashing, JWT generation,
-and FastAPI endpoint execution.
+Standalone Verification Script for CampusClub Backend (Auth, Dashboard, Clubs, Events).
+Run this script to verify DB creation, user roles (including ADMIN), FastAPI endpoints,
+and integration between frontend schemas and backend ORM models.
 """
 import sys
 import os
+import asyncio
+import httpx
 
 # Ensure backend root is in sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from fastapi.testclient import TestClient
 from app.main import app
 from app.db.session import engine, Base
 
-def run_auth_verification():
+async def run_backend_verification():
     print("==================================================")
-    print("STARTING CAMPUSCLUB AUTHENTICATION VERIFICATION")
+    print("STARTING CAMPUSCLUB FULL BACKEND & DB VERIFICATION")
     print("==================================================")
 
     # Initialize tables
+    Base.metadata.drop_all(bind=engine)  # Fresh test run
     Base.metadata.create_all(bind=engine)
-    client = TestClient(app)
 
-    test_email = "alex.student@university.edu"
-    test_password = "SecurePassword123"
-    new_password = "NewPassword456"
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver", follow_redirects=True) as client:
+        test_username = "alex_chen"
+        test_email = "alex.chen@university.edu"
+        test_password = "SecurePassword123"
 
-    # 1. Register User
-    print("\n[1/7] Testing Register endpoint (POST /api/auth/register)...")
-    reg_payload = {
-        "full_name": "Alex Student",
-        "email": test_email,
-        "password": test_password,
-        "department": "Computer Science & Engineering",
-        "year": 3
-    }
-    response = client.post("/api/auth/register", json=reg_payload)
-    if response.status_code == 201:
-        data = response.json()
-        print("  ✓ SUCCESS: User registered!")
-        print(f"    User ID: {data['id']}")
-        print(f"    Email: {data['email']}")
-        print(f"    Role: {data['role']}")
-        assert "password_hash" not in data, "Security flaw: password_hash leaked!"
-    elif response.status_code == 409:
-        print("  ℹ User already registered from previous run. Continuing test flow...")
-    else:
-        print(f"  ❌ FAILED ({response.status_code}): {response.text}")
-        sys.exit(1)
+        admin_username = "admin_head"
+        admin_email = "admin@university.edu"
 
-    # 2. Login User
-    print("\n[2/7] Testing Login endpoint (POST /api/auth/login)...")
-    login_payload = {
-        "email": test_email,
-        "password": test_password
-    }
-    response = client.post("/api/auth/login", json=login_payload)
-    assert response.status_code == 200, f"Login failed: {response.text}"
-    login_data = response.json()
-    access_token = login_data["access_token"]
-    refresh_cookie = response.cookies.get("refresh_token")
-    print("  ✓ SUCCESS: Login successful!")
-    print(f"    Access Token: {access_token[:25]}...")
-    print(f"    Refresh Token Cookie set: {bool(refresh_cookie)}")
+        # 1. Register Student User
+        print("\n[1/8] Testing Student Registration (POST /api/auth/register)...")
+        reg_payload = {
+            "username": test_username,
+            "full_name": "Alex Chen",
+            "email": test_email,
+            "password": test_password,
+            "department": "Computer Science & Engineering",
+            "year": 3,
+            "role": "STUDENT"
+        }
+        response = await client.post("/api/auth/register", json=reg_payload)
+        assert response.status_code == 201, f"Student registration failed: {response.text}"
+        student_data = response.json()
+        print("  [OK] SUCCESS: Student registered!")
+        print(f"    User ID: {student_data['id']} | Username: {student_data['username']} | Role: {student_data['role']}")
 
-    # 3. Test Invalid Login
-    print("\n[3/7] Testing Invalid Password Handling...")
-    bad_login = client.post("/api/auth/login", json={"email": test_email, "password": "WrongPassword999"})
-    assert bad_login.status_code == 401, f"Expected 401, got {bad_login.status_code}"
-    print("  ✓ SUCCESS: Rejected invalid credentials with 401 Unauthorized.")
+        # 2. Register Admin User
+        print("\n[2/8] Testing Admin Registration (POST /api/auth/register)...")
+        admin_payload = {
+            "username": admin_username,
+            "full_name": "System Administrator",
+            "email": admin_email,
+            "password": test_password,
+            "department": "Dean of Student Affairs",
+            "role": "ADMIN"
+        }
+        response = await client.post("/api/auth/register", json=admin_payload)
+        assert response.status_code == 201, f"Admin registration failed: {response.text}"
+        admin_data = response.json()
+        print("  [OK] SUCCESS: Admin user registered with ADMIN role!")
+        print(f"    Admin User ID: {admin_data['id']} | Role: {admin_data['role']}")
 
-    # 4. GET /api/auth/me (Authenticated)
-    print("\n[4/7] Testing Protected Profile endpoint (GET /api/auth/me)...")
-    headers = {"Authorization": f"Bearer {access_token}"}
-    me_resp = client.get("/api/auth/me", headers=headers)
-    assert me_resp.status_code == 200, f"GET /me failed: {me_resp.text}"
-    user_me = me_resp.json()
-    print("  ✓ SUCCESS: Retrieved authenticated user profile!")
-    print(f"    Name: {user_me['full_name']} | Dept: {user_me['department']} | Year: {user_me['year']}")
+        # 3. Login User with Identifier (Username or Email)
+        print("\n[3/8] Testing Login with Username Identifier (POST /api/auth/login)...")
+        login_payload = {
+            "identifier": test_username,
+            "password": test_password
+        }
+        response = await client.post("/api/auth/login", json=login_payload)
+        assert response.status_code == 200, f"Login failed: {response.text}"
+        login_data = response.json()
+        student_token = login_data["access_token"]
+        print("  [OK] SUCCESS: Logged in using username!")
 
-    # 5. POST /api/auth/refresh
-    print("\n[5/7] Testing Token Refresh endpoint (POST /api/auth/refresh)...")
-    refresh_resp = client.post("/api/auth/refresh", cookies={"refresh_token": refresh_cookie} if refresh_cookie else None)
-    if refresh_resp.status_code == 200:
-        new_access_token = refresh_resp.json()["access_token"]
-        print("  ✓ SUCCESS: Token refreshed successfully!")
-        print(f"    New Access Token: {new_access_token[:25]}...")
-    else:
-        print(f"  ℹ Refresh response ({refresh_resp.status_code}): {refresh_resp.text}")
+        # Login Admin
+        admin_login_resp = await client.post("/api/auth/login", json={"identifier": admin_email, "password": test_password})
+        assert admin_login_resp.status_code == 200, f"Admin login failed: {admin_login_resp.text}"
+        admin_token = admin_login_resp.json()["access_token"]
 
-    # 6. Change Password
-    print("\n[6/7] Testing Change Password (POST /api/auth/change-password)...")
-    change_pw_payload = {
-        "current_password": test_password,
-        "new_password": new_password
-    }
-    pw_resp = client.post("/api/auth/change-password", json=change_pw_payload, headers=headers)
-    assert pw_resp.status_code == 200, f"Change password failed: {pw_resp.text}"
-    print("  ✓ SUCCESS: Password updated successfully!")
+        # 4. Create Club as Admin
+        print("\n[4/8] Testing Club Creation by Admin (POST /api/clubs)...")
+        admin_headers = {"Authorization": f"Bearer {admin_token}"}
+        club_payload = {
+            "name": "ACM Student Chapter",
+            "slug": "acm-student-chapter",
+            "category": "Technical",
+            "description": "Premier coding and algorithmic society hosting annual hackathons.",
+            "department": "Dept. of Computer Science",
+            "badge_text": "Top 1% Chapter"
+        }
+        club_resp = await client.post("/api/clubs", json=club_payload, headers=admin_headers)
+        if club_resp.status_code != 201:
+            print(f"  [ERROR] Create club status code: {club_resp.status_code}, Body: {club_resp.text}")
+        assert club_resp.status_code == 201, f"Create club failed: {club_resp.text}"
+        club_data = club_resp.json()
+        club_id = club_data["id"]
+        print(f"  [OK] SUCCESS: Created Club '{club_data['name']}' (ID: {club_id})!")
 
-    # Verify login with new password
-    relogin_resp = client.post("/api/auth/login", json={"email": test_email, "password": new_password})
-    assert relogin_resp.status_code == 200, "Login with new password failed!"
-    print("  ✓ SUCCESS: Authenticated using new password.")
+        # 5. Join Club as Student
+        print("\n[5/8] Testing Student Join Club (POST /api/clubs/{id}/join)...")
+        student_headers = {"Authorization": f"Bearer {student_token}"}
+        join_resp = await client.post(f"/api/clubs/{club_id}/join", json={"role": "MEMBER"}, headers=student_headers)
+        assert join_resp.status_code == 200, f"Join club failed: {join_resp.text}"
+        print("  [OK] SUCCESS: Student joined ACM Student Chapter!")
 
-    # Revert password back for repeatability
-    new_token = relogin_resp.json()["access_token"]
-    client.post(
-        "/api/auth/change-password",
-        json={"current_password": new_password, "new_password": test_password},
-        headers={"Authorization": f"Bearer {new_token}"}
-    )
+        # 6. Create Event as Admin
+        print("\n[6/8] Testing Event Creation by Admin (POST /api/events)...")
+        event_payload = {
+            "title": "Annual AI & Cloud Summit 2025",
+            "slug": "annual-ai-cloud-summit-2025",
+            "club_id": club_id,
+            "category": "Technical",
+            "description": "Keynotes, hands-on cloud labs, and networking sessions.",
+            "venue": "Turing Hall, Campus Tech Hub 3F",
+            "start_time": "2025-11-14T10:00:00Z",
+            "capacity": 200,
+            "is_free": True,
+            "ticket_price": "Free"
+        }
+        event_resp = await client.post("/api/events", json=event_payload, headers=admin_headers)
+        assert event_resp.status_code == 201, f"Create event failed: {event_resp.text}"
+        event_data = event_resp.json()
+        event_id = event_data["id"]
+        print(f"  [OK] SUCCESS: Created Event '{event_data['title']}' (ID: {event_id})!")
 
-    # 7. Logout
-    print("\n[7/7] Testing Logout (POST /api/auth/logout)...")
-    logout_resp = client.post("/api/auth/logout")
-    assert logout_resp.status_code == 200, f"Logout failed: {logout_resp.text}"
-    print("  ✓ SUCCESS: Logout completed and refresh cookie cleared.")
+        # 7. Register Student for Event
+        print("\n[7/8] Testing Student Event Registration (POST /api/events/{id}/register)...")
+        reg_resp = await client.post(f"/api/events/{event_id}/register", headers=student_headers)
+        assert reg_resp.status_code == 200, f"Event registration failed: {reg_resp.text}"
+        ticket_data = reg_resp.json()
+        print(f"  [OK] SUCCESS: Student registered for Event! Issued Ticket: {ticket_data['ticket_code']}")
 
-    print("\n==================================================")
-    print("ALL BACKEND AUTHENTICATION TESTS PASSED PERFECTLY!")
-    print("==================================================")
+        # 8. Fetch Dashboard Summary
+        print("\n[8/8] Testing Unified Dashboard Summary (GET /api/dashboard/summary)...")
+        dash_resp = await client.get("/api/dashboard/summary", headers=student_headers)
+        assert dash_resp.status_code == 200, f"Dashboard fetch failed: {dash_resp.text}"
+        dash_data = dash_resp.json()
+        print("  [OK] SUCCESS: Retrieved unified dashboard state!")
+        print(f"    User: {dash_data['user']['full_name']} (@{dash_data['user']['username']})")
+        print(f"    Total Joined Clubs: {dash_data['metrics']['total_joined_clubs']}")
+        print(f"    Upcoming Events Registered: {dash_data['metrics']['upcoming_events_registered']}")
+        print(f"    Schedule Items: {len(dash_data['schedule'])}")
 
+        print("\n==================================================")
+        print("ALL BACKEND & DATABASE INTEGRATION TESTS PASSED!")
+        print("==================================================")
 
 if __name__ == "__main__":
-    run_auth_verification()
+    asyncio.run(run_backend_verification())

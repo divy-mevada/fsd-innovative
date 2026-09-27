@@ -19,6 +19,10 @@ export const Badge: React.FC<BadgeProps> = ({
 
   if (role) {
     switch (role) {
+      case 'ADMIN':
+        roleStyles = 'bg-rose-100 text-rose-800 border-rose-300 font-extrabold';
+        roleText = roleText || 'System Admin';
+        break;
       case 'CLUB_HEAD':
         roleStyles = 'bg-purple-100 text-purple-800 border-purple-300 font-bold';
         roleText = roleText || 'Club Head';

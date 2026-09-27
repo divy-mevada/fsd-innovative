@@ -47,12 +47,14 @@ class UserRole(str, enum.Enum):
     CLUB_MEMBER = "CLUB_MEMBER"
     EXECUTIVE = "EXECUTIVE"
     CLUB_HEAD = "CLUB_HEAD"
+    ADMIN = "ADMIN"
 
 
 class User(Base):
     __tablename__ = "users"
 
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
+    username = Column(String(100), unique=True, index=True, nullable=False)
     full_name = Column(String(255), nullable=False)
     email = Column(String(255), unique=True, index=True, nullable=False)
     password_hash = Column(String(255), nullable=False)

@@ -13,11 +13,19 @@ class AuthService:
     @staticmethod
     def register_user(db: Session, user_in: UserRegister) -> User:
         # Check unique email
-        existing_user = user_repository.get_by_email(db, email=user_in.email)
-        if existing_user:
+        existing_email = user_repository.get_by_email(db, email=user_in.email)
+        if existing_email:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="A user with this email address already exists."
+            )
+
+        # Check unique username
+        existing_username = user_repository.get_by_username(db, username=user_in.username)
+        if existing_username:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Username is already taken."
             )
 
         hashed_pwd = security.hash_password(user_in.password)
@@ -26,18 +34,18 @@ class AuthService:
 
     @staticmethod
     def authenticate_user(db: Session, login_data: UserLogin) -> Tuple[User, str, str]:
-        user = user_repository.get_by_email(db, email=login_data.email)
+        user = user_repository.get_by_identifier(db, identifier=login_data.identifier)
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid email or password.",
+                detail="Invalid username/email or password.",
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
         if not security.verify_password(login_data.password, user.password_hash):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid email or password.",
+                detail="Invalid username/email or password.",
                 headers={"WWW-Authenticate": "Bearer"},
             )
 

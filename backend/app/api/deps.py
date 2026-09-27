@@ -82,10 +82,12 @@ def require_role(allowed_roles: List[UserRole]) -> Callable:
     Example: Depends(require_role([UserRole.EXECUTIVE, UserRole.CLUB_HEAD]))
     """
     def role_checker(current_user: User = Depends(get_current_user)) -> User:
-        if current_user.role not in allowed_roles:
+        user_role_val = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
+        allowed_vals = [r.value if hasattr(r, "value") else str(r) for r in allowed_roles]
+        if user_role_val not in allowed_vals:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Operation not permitted. Required role: {[r.value for r in allowed_roles]}."
+                detail=f"Operation not permitted. Required role: {allowed_vals}."
             )
         return current_user
 

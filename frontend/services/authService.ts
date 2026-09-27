@@ -9,12 +9,25 @@ import {
 
 export const authService = {
   async register(data: RegisterData): Promise<User> {
-    const response = await api.post<User>('/auth/register', data);
+    const payload = {
+      username: data.username || data.email.split('@')[0],
+      full_name: data.full_name,
+      email: data.email,
+      password: data.password,
+      department: data.department,
+      year: data.year,
+      role: data.role || 'STUDENT',
+    };
+    const response = await api.post<User>('/auth/register', payload);
     return response.data;
   },
 
   async login(credentials: LoginCredentials): Promise<TokenResponse> {
-    const response = await api.post<TokenResponse>('/auth/login', credentials);
+    const payload = {
+      identifier: credentials.identifier || credentials.email || '',
+      password: credentials.password,
+    };
+    const response = await api.post<TokenResponse>('/auth/login', payload);
     if (response.data.access_token) {
       setAccessToken(response.data.access_token);
     }
