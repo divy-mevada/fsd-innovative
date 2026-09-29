@@ -19,6 +19,7 @@ export const AddClubModal: React.FC<AddClubModalProps> = ({
   const [department, setDepartment] = useState('');
   const [headName, setHeadName] = useState('');
   const [badgeText, setBadgeText] = useState('Chartered 2025');
+  const [websiteUrl, setWebsiteUrl] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,6 +78,7 @@ export const AddClubModal: React.FC<AddClubModalProps> = ({
         perYr: '6 / Yr',
         tagline: 'Newly Chartered',
         bgIcon: getCategoryIcon(category),
+        website_url: websiteUrl || undefined,
         head_name: headName || 'Student Executive',
       });
 
@@ -194,18 +196,34 @@ export const AddClubModal: React.FC<AddClubModalProps> = ({
             </div>
           </div>
 
-          <div className="space-y-space-xs">
-            <label className="block font-label-md text-label-md font-semibold text-on-surface" htmlFor="badge-text">
-              Charter Badge / Rank Tag
-            </label>
-            <input
-              id="badge-text"
-              type="text"
-              placeholder="e.g. Top 1% Chapter, Accredited, Tier 1 Funded"
-              value={badgeText}
-              onChange={(e) => setBadgeText(e.target.value)}
-              className="w-full px-3 py-2 bg-surface-container-low rounded-lg text-on-surface font-body-sm text-body-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-secondary"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+            <div className="space-y-space-xs">
+              <label className="block font-label-md text-label-md font-semibold text-on-surface" htmlFor="badge-text">
+                Charter Badge / Rank Tag
+              </label>
+              <input
+                id="badge-text"
+                type="text"
+                placeholder="e.g. Top 1% Chapter, Accredited"
+                value={badgeText}
+                onChange={(e) => setBadgeText(e.target.value)}
+                className="w-full px-3 py-2 bg-surface-container-low rounded-lg text-on-surface font-body-sm text-body-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-secondary"
+              />
+            </div>
+
+            <div className="space-y-space-xs">
+              <label className="block font-label-md text-label-md font-semibold text-on-surface" htmlFor="website-url">
+                Official Website URL
+              </label>
+              <input
+                id="website-url"
+                type="url"
+                placeholder="https://nu.acm.org/"
+                value={websiteUrl}
+                onChange={(e) => setWebsiteUrl(e.target.value)}
+                className="w-full px-3 py-2 bg-surface-container-low rounded-lg text-on-surface font-body-sm text-body-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-secondary"
+              />
+            </div>
           </div>
 
           <div className="space-y-space-xs">

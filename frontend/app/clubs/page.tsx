@@ -4,13 +4,17 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { useClubsStore, ClubItem } from '@/lib/clubs-store';
 import { AddClubModal } from '@/components/AddClubModal';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ClubsPage() {
+  const { user } = useAuth();
   const { clubs, refreshClubs } = useClubsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [joinedClubIds, setJoinedClubIds] = useState<string[]>(['c1']);
+  const [joinedClubIds, setJoinedClubIds] = useState<string[]>(['csi_chapter']);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const isAdmin = user?.role === 'ADMIN';
 
   useEffect(() => {
     const handleUpdate = () => refreshClubs();
@@ -64,18 +68,20 @@ export default function ClubsPage() {
                   Collegiate Organizations Directory
                 </h1>
                 <p className="font-body-md text-body-md text-on-surface-variant mt-1">
-                  Explore {clubs.length} chartered student clubs, societies, and tech chapters across campus. Connect with executive leads and join student communities.
+                  Explore {clubs.length} chartered student clubs, societies, and tech chapters across campus. Connect with executive leads and visit official club portals.
                 </p>
               </div>
 
-              {/* Add New Club Action Button */}
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="px-space-md py-2.5 bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg rounded-lg shadow-md transition-all duration-200 flex items-center gap-space-xs font-bold active:scale-[0.98] whitespace-nowrap self-start lg:self-end"
-              >
-                <span className="material-symbols-outlined text-base">add_circle</span>
-                <span>+ Register New Club</span>
-              </button>
+              {/* Add New Club Action Button (STRICTLY ADMIN ONLY) */}
+              {isAdmin && (
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="px-space-md py-2.5 bg-red-600 hover:bg-red-700 text-white font-label-lg text-label-lg rounded-lg shadow-md transition-all duration-200 flex items-center gap-space-xs font-bold active:scale-[0.98] whitespace-nowrap self-start lg:self-end"
+                >
+                  <span className="material-symbols-outlined text-base">add_circle</span>
+                  <span>+ Register New Club</span>
+                </button>
+              )}
             </div>
 
             {/* Search Bar & Controls */}
@@ -170,10 +176,25 @@ export default function ClubsPage() {
                   </div>
                 </div>
 
-                <div className="px-space-md pb-space-md pt-space-xs flex items-center gap-space-sm">
+                <div className="px-space-md pb-space-md pt-space-xs flex items-center gap-2">
+                  {/* Official Website Launch Button */}
+                  {club.website_url && (
+                    <a
+                      href={club.website_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-2 px-3 bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md rounded-lg transition-colors font-bold flex items-center justify-center gap-1 text-center"
+                      title={`Visit ${club.name} Official Website`}
+                    >
+                      <span className="material-symbols-outlined text-sm">open_in_new</span>
+                      <span>Visit Site</span>
+                    </a>
+                  )}
+
+                  {/* Toggle Join Club Button */}
                   <button
                     onClick={() => toggleJoin(club.id)}
-                    className={`w-full py-2 px-4 font-label-md text-label-md rounded-lg transition-colors shadow-sm font-bold flex items-center justify-center gap-1 ${
+                    className={`flex-1 py-2 px-3 font-label-md text-label-md rounded-lg transition-colors shadow-sm font-bold flex items-center justify-center gap-1 ${
                       isJoined
                         ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
                         : 'bg-primary hover:bg-primary-container text-on-primary'
@@ -190,14 +211,16 @@ export default function ClubsPage() {
           })}
         </div>
 
-        {/* Modal for Adding New Club */}
-        <AddClubModal
-          isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
-          onSuccess={() => {
-            refreshClubs();
-          }}
-        />
+        {/* Modal for Adding New Club (STRICTLY ADMIN ONLY) */}
+        {isAdmin && (
+          <AddClubModal
+            isOpen={isAddModalOpen}
+            onClose={() => setIsAddModalOpen(false)}
+            onSuccess={() => {
+              refreshClubs();
+            }}
+          />
+        )}
       </div>
     </DashboardLayout>
   );
