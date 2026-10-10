@@ -1,5 +1,12 @@
 export type UserRole = 'STUDENT' | 'CLUB_MEMBER' | 'EXECUTIVE' | 'CLUB_HEAD' | 'ADMIN';
 
+export interface UserClubMembership {
+  club_id: string;
+  club_name: string;
+  role: UserRole;
+  joined_at?: string;
+}
+
 export interface User {
   id: string;
   username: string;
@@ -9,6 +16,7 @@ export interface User {
   department?: string | null;
   year?: number | null;
   role: UserRole;
+  club_memberships?: UserClubMembership[];
   is_active: boolean;
   created_at: string;
   updated_at: string;

@@ -17,16 +17,16 @@ class AuthService:
         if existing_email:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail="A user with this email address already exists."
+                detail="A user with this email address already exists. Please login instead."
             )
 
-        # Check unique username
-        existing_username = user_repository.get_by_username(db, username=user_in.username)
-        if existing_username:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Username is already taken."
-            )
+        # Check unique username, auto-resolve collision if username is taken
+        base_username = (user_in.username or user_in.email.split("@")[0]).lower().strip()
+        final_username = base_username
+        while user_repository.get_by_username(db, username=final_username):
+            final_username = f"{base_username}_{uuid.uuid4().hex[:4]}"
+
+        user_in.username = final_username
 
         hashed_pwd = security.hash_password(user_in.password)
         db_user = user_repository.create(db, user_in=user_in, hashed_password=hashed_pwd)

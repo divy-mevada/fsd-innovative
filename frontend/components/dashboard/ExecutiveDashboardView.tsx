@@ -6,6 +6,7 @@ import { User } from '@/types/auth';
 
 interface ExecutiveDashboardViewProps {
   user: User | null;
+  clubName?: string;
 }
 
 interface TaskItem {
@@ -21,7 +22,7 @@ const INITIAL_TASKS: TaskItem[] = [
   { id: '3', title: 'Review Pending Member Applications', category: 'Membership', status: 'todo' },
 ];
 
-export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({ user }) => {
+export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({ user, clubName = 'CSI Chapter' }) => {
   const router = useRouter();
   const [tasks, setTasks] = useState<TaskItem[]>(INITIAL_TASKS);
   const [pendingApplicants, setPendingApplicants] = useState([
@@ -40,7 +41,7 @@ export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({ 
         <div className="relative z-10 max-w-3xl space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-semibold uppercase tracking-wider text-amber-200">
             <span className="material-symbols-outlined text-sm">assignment</span>
-            <span>Executive Operations</span>
+            <span>Executive Operations • {clubName}</span>
           </div>
 
           <h1 className="text-3xl font-extrabold tracking-tight text-white leading-tight">
@@ -48,7 +49,7 @@ export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({ 
           </h1>
 
           <p className="text-xs sm:text-sm text-amber-100/90 max-w-xl leading-relaxed">
-            Manage club task deliverables, review member applications, and organize event logistics.
+            Managing event logistics, tasks, and member workflows for <strong className="text-white">{clubName}</strong>.
           </p>
 
           <div className="flex items-center gap-3 pt-2">

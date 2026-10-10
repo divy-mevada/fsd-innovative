@@ -7,9 +7,10 @@ import { User } from '@/types/auth';
 
 interface MemberDashboardViewProps {
   user: User | null;
+  clubName?: string;
 }
 
-export const MemberDashboardView: React.FC<MemberDashboardViewProps> = ({ user }) => {
+export const MemberDashboardView: React.FC<MemberDashboardViewProps> = ({ user, clubName = 'Club Member' }) => {
   const router = useRouter();
 
   return (
@@ -19,7 +20,7 @@ export const MemberDashboardView: React.FC<MemberDashboardViewProps> = ({ user }
         <div className="relative z-10 max-w-3xl space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-semibold uppercase tracking-wider text-teal-200">
             <span className="material-symbols-outlined text-sm">card_membership</span>
-            <span>Member Portal</span>
+            <span>Member Portal • {clubName}</span>
           </div>
 
           <h1 className="text-3xl font-extrabold tracking-tight text-white leading-tight">
@@ -27,7 +28,7 @@ export const MemberDashboardView: React.FC<MemberDashboardViewProps> = ({ user }
           </h1>
 
           <p className="text-xs sm:text-sm text-teal-100/90 max-w-xl leading-relaxed">
-            Access exclusive member discussions, RSVP for workshops, and visit official club websites.
+            Access exclusive member discussions, RSVP for workshops, and visit official club websites for <strong className="text-white">{clubName}</strong>.
           </p>
 
           <div className="flex items-center gap-3 pt-2">

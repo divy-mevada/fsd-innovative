@@ -6,9 +6,10 @@ import { User } from '@/types/auth';
 
 interface ClubHeadDashboardViewProps {
   user: User | null;
+  clubName?: string;
 }
 
-export const ClubHeadDashboardView: React.FC<ClubHeadDashboardViewProps> = ({ user }) => {
+export const ClubHeadDashboardView: React.FC<ClubHeadDashboardViewProps> = ({ user, clubName = 'ACM Student Chapter' }) => {
   const router = useRouter();
 
   return (
@@ -18,21 +19,21 @@ export const ClubHeadDashboardView: React.FC<ClubHeadDashboardViewProps> = ({ us
         <div className="relative z-10 max-w-3xl space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-semibold uppercase tracking-wider text-purple-200">
             <span className="material-symbols-outlined text-sm">stars</span>
-            <span>Club President Hub</span>
+            <span>Club President Hub • {clubName}</span>
           </div>
 
           <h1 className="text-3xl font-extrabold tracking-tight text-white leading-tight">
-            Club Leadership — {user?.full_name || 'President'}
+            Club Head Governance — {user?.full_name || 'President'}
           </h1>
 
           <p className="text-xs sm:text-sm text-purple-100/90 max-w-xl leading-relaxed">
-            Oversee your organization charter, manage executive roles, and direct club activities.
+            Overseeing charter administration, executive team operations, and flagship event approvals for <strong className="text-white">{clubName}</strong>.
           </p>
 
           <div className="flex items-center gap-3 pt-2">
             <button
               onClick={() => router.push('/admin/clubs')}
-              className="px-4 py-2 bg-white text-purple-950 font-bold text-xs rounded-lg shadow-xs hover:bg-purple-50 transition-all flex items-center gap-1"
+              className="px-4 py-2 bg-white text-purple-950 font-bold text-xs rounded-lg shadow-xs hover:bg-purple-50 transition-all flex items-center gap-1 cursor-pointer"
             >
               <span className="material-symbols-outlined text-base">domain_verification</span>
               <span>Charter Profile</span>
@@ -90,7 +91,7 @@ export const ClubHeadDashboardView: React.FC<ClubHeadDashboardViewProps> = ({ us
         <div className="lg:col-span-8 space-y-6">
           <section className="bg-surface-container-lowest p-6 rounded-2xl border border-slate-100 shadow-xs space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-on-surface">Computer Society of India (CSI) Charter</h3>
+              <h3 className="text-base font-bold text-on-surface">{clubName} Charter</h3>
               <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
                 ACTIVE CHARTER
               </span>

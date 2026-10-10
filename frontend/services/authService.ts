@@ -9,13 +9,14 @@ import {
 
 export const authService = {
   async register(data: RegisterData): Promise<User> {
+    const rawUsername = data.username || data.email.split('@')[0];
     const payload = {
-      username: data.username || data.email.split('@')[0],
+      username: rawUsername.toLowerCase().trim(),
       full_name: data.full_name,
-      email: data.email,
+      email: data.email.toLowerCase().trim(),
       password: data.password,
-      department: data.department,
-      year: data.year,
+      department: data.department || 'Computer Science',
+      year: data.year || 1,
       role: data.role || 'STUDENT',
     };
     const response = await api.post<User>('/auth/register', payload);
