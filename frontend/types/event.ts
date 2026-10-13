@@ -3,6 +3,7 @@ export interface CampusEvent {
   title: string;
   slug: string;
   club_id?: string | null;
+  club_name?: string | null;
   category: string;
   description: string;
   venue: string;
@@ -13,6 +14,7 @@ export interface CampusEvent {
   registered_count: number;
   is_free: boolean;
   ticket_price?: string | null;
+  google_form_url?: string | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;

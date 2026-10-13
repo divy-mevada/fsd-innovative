@@ -92,7 +92,9 @@ export const Navbar: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => logout()}
+                  onClick={async () => {
+                    await logout();
+                  }}
                   title="Logout"
                   className="gap-1 text-slate-700 hover:text-red-600 hover:border-red-300"
                 >

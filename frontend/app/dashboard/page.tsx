@@ -19,8 +19,10 @@ export default function DashboardPage() {
 
   // Set initial selected club to highest role club or first membership
   useEffect(() => {
-    if (memberships.length > 0 && !selectedClubId) {
-      setSelectedClubId(memberships[0].club_id);
+    if (memberships.length > 0 && (!selectedClubId || (selectedClubId !== 'general_student' && !memberships.some((m) => m.club_id === selectedClubId)))) {
+      const head = memberships.find((m) => m.role === 'CLUB_HEAD');
+      const exec = memberships.find((m) => m.role === 'EXECUTIVE');
+      setSelectedClubId((head || exec || memberships[0]).club_id);
     }
   }, [memberships, selectedClubId]);
 
@@ -31,21 +33,29 @@ export default function DashboardPage() {
       return <AdminDashboardView user={user} />;
     }
 
-    if (!activeMembership || !selectedClubId) {
+    if (selectedClubId === 'general_student') {
       return <StudentDashboardView user={user} />;
     }
 
-    switch (activeMembership.role) {
-      case 'CLUB_HEAD':
-        return <ClubHeadDashboardView user={user} clubName={activeMembership.club_name} />;
-      case 'EXECUTIVE':
-        return <ExecutiveDashboardView user={user} clubName={activeMembership.club_name} />;
-      case 'CLUB_MEMBER':
-        return <MemberDashboardView user={user} clubName={activeMembership.club_name} />;
-      case 'STUDENT':
-      default:
-        return <StudentDashboardView user={user} />;
+    if (activeMembership) {
+      switch (activeMembership.role) {
+        case 'CLUB_HEAD':
+          return <ClubHeadDashboardView user={user} clubName={activeMembership.club_name} clubId={activeMembership.club_id} />;
+        case 'EXECUTIVE':
+          return <ExecutiveDashboardView user={user} clubName={activeMembership.club_name} clubId={activeMembership.club_id} />;
+        case 'CLUB_MEMBER':
+          return <MemberDashboardView user={user} clubName={activeMembership.club_name} clubId={activeMembership.club_id} />;
+        case 'STUDENT':
+        default:
+          return <StudentDashboardView user={user} />;
+      }
     }
+
+    if (userRole === 'CLUB_HEAD') {
+      return <ClubHeadDashboardView user={user} clubName="ACM Student Chapter" clubId="acm_chapter" />;
+    }
+
+    return <StudentDashboardView user={user} />;
   };
 
   return (

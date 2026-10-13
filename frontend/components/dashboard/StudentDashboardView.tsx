@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { User } from '@/types/auth';
+import { getUserApplications, ClubApplication } from '@/lib/club-applications-store';
 
 interface StudentDashboardViewProps {
   user: User | null;
@@ -20,11 +21,30 @@ const CATEGORIES = [
 
 export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ user }) => {
   const router = useRouter();
+  const [applications, setApplications] = useState<ClubApplication[]>([]);
+
+  const userMemberships = user?.club_memberships || [];
+
+  const loadApps = () => {
+    if (user?.id || user?.email) {
+      const apps = getUserApplications(user.id || user.email);
+      setApplications(apps);
+    }
+  };
+
+  useEffect(() => {
+    loadApps();
+    const handleUpdate = () => loadApps();
+    window.addEventListener('campusclub_applications_updated', handleUpdate);
+    return () => window.removeEventListener('campusclub_applications_updated', handleUpdate);
+  }, [user]);
+
+  const pendingApps = applications.filter((a) => a.status === 'PENDING');
 
   return (
-    <div className="flex flex-col w-full pb-space-xl">
+    <div className="flex flex-col w-full pb-space-xl space-y-6">
       {/* Hero Welcome Banner */}
-      <section className="relative w-full rounded-2xl overflow-hidden shadow-sm bg-gradient-to-r from-primary-container via-primary to-secondary p-8 text-on-primary mb-6">
+      <section className="relative w-full rounded-2xl overflow-hidden shadow-sm bg-gradient-to-r from-primary-container via-primary to-secondary p-8 text-on-primary">
         <div className="relative z-10 max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-semibold uppercase tracking-wider text-secondary-fixed">
             <span className="material-symbols-outlined text-sm">school</span>
@@ -36,20 +56,20 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ user
           </h1>
 
           <p className="text-sm sm:text-base text-primary-fixed-dim/90 max-w-xl leading-relaxed">
-            Discover campus clubs, register for hackathons and workshops, and build your student portfolio.
+            Discover campus clubs, submit applications to join chapters, and build your collegiate leadership profile.
           </p>
 
           <div className="flex items-center gap-3 pt-2">
             <button
               onClick={() => router.push('/clubs')}
-              className="px-5 py-2.5 bg-white text-primary font-bold text-sm rounded-lg shadow-sm hover:bg-slate-50 transition-all flex items-center gap-1.5"
+              className="px-5 py-2.5 bg-white text-primary font-bold text-sm rounded-lg shadow-sm hover:bg-slate-50 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span>Explore Clubs</span>
               <span className="material-symbols-outlined text-base">arrow_forward</span>
             </button>
             <button
               onClick={() => router.push('/events')}
-              className="px-5 py-2.5 bg-white/10 backdrop-blur-md text-white font-bold text-sm rounded-lg hover:bg-white/20 transition-all flex items-center gap-1.5"
+              className="px-5 py-2.5 bg-white/10 backdrop-blur-md text-white font-bold text-sm rounded-lg hover:bg-white/20 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-base">calendar_month</span>
               <span>Events Calendar</span>
@@ -59,7 +79,7 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ user
       </section>
 
       {/* Metric Stats Bar */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-surface-container-lowest rounded-xl p-4 border border-slate-100 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Campus Guilds</span>
@@ -73,7 +93,7 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ user
         <div className="bg-surface-container-lowest rounded-xl p-4 border border-slate-100 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Joined Clubs</span>
-            <div className="text-2xl font-extrabold text-teal-700 mt-1">0</div>
+            <div className="text-2xl font-extrabold text-teal-700 mt-1">{userMemberships.length}</div>
           </div>
           <div className="w-10 h-10 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600">
             <span className="material-symbols-outlined">group_add</span>
@@ -82,24 +102,83 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ user
 
         <div className="bg-surface-container-lowest rounded-xl p-4 border border-slate-100 shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Event RSVPs</span>
-            <div className="text-2xl font-extrabold text-purple-700 mt-1">0</div>
+            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Pending Applications</span>
+            <div className="text-2xl font-extrabold text-amber-700 mt-1">{pendingApps.length}</div>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
-            <span className="material-symbols-outlined">event_available</span>
+          <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+            <span className="material-symbols-outlined">pending_actions</span>
           </div>
         </div>
 
         <div className="bg-surface-container-lowest rounded-xl p-4 border border-slate-100 shadow-xs flex items-center justify-between">
           <div>
             <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Badges</span>
-            <div className="text-2xl font-extrabold text-amber-700 mt-1">0</div>
+            <div className="text-2xl font-extrabold text-purple-700 mt-1">{userMemberships.length > 0 ? '1' : '0'}</div>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+          <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
             <span className="material-symbols-outlined">workspace_premium</span>
           </div>
         </div>
       </section>
+
+      {/* Applications & Joined Clubs Tracker Section */}
+      {(applications.length > 0 || userMemberships.length > 0) && (
+        <section className="bg-surface-container-lowest p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-xl">fact_check</span>
+              <h3 className="text-base font-bold text-on-surface">My Club Application Status</h3>
+            </div>
+            <span className="text-xs text-on-surface-variant font-medium">Club Head Decision Tracker</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {applications.map((app) => (
+              <div
+                key={app.id}
+                className={`p-4 rounded-xl border flex items-start justify-between gap-3 ${
+                  app.status === 'ACCEPTED'
+                    ? 'border-emerald-200 bg-emerald-50/20'
+                    : app.status === 'REJECTED'
+                    ? 'border-slate-200 bg-slate-50/50'
+                    : 'border-amber-200 bg-amber-50/20'
+                }`}
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-xs font-bold text-on-surface">{app.club_name}</h4>
+                  </div>
+                  <p className="text-[11px] text-on-surface-variant">
+                    {app.status === 'PENDING'
+                      ? 'Waiting for Club Head approval. Notification sent to chapter leadership.'
+                      : app.status === 'ACCEPTED'
+                      ? 'Approved by Club Head! You are an active chapter member.'
+                      : 'Application was declined.'}
+                  </p>
+                  <span className="text-[10px] text-outline block">
+                    Applied: {new Date(app.applied_at).toLocaleDateString()}
+                  </span>
+                </div>
+
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-extrabold shrink-0 ${
+                    app.status === 'ACCEPTED'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : app.status === 'REJECTED'
+                      ? 'bg-slate-200 text-slate-700'
+                      : 'bg-amber-100 text-amber-800 flex items-center gap-1'
+                  }`}
+                >
+                  {app.status === 'PENDING' && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse"></span>
+                  )}
+                  {app.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -136,14 +215,14 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ user
               <span className="material-symbols-outlined text-2xl">groups</span>
             </div>
             <div>
-              <h3 className="text-base font-bold text-on-surface">Explore University Clubs</h3>
+              <h3 className="text-base font-bold text-on-surface">Explore University Clubs & Apply</h3>
               <p className="text-xs text-on-surface-variant mt-1">
-                Browse student tech guilds, design groups, and sports organizations.
+                Browse student tech guilds, design groups, and sports organizations. Apply to join and the club head will review your request.
               </p>
             </div>
             <button
               onClick={() => router.push('/clubs')}
-              className="px-5 py-2 rounded-lg bg-primary text-on-primary text-xs font-bold hover:bg-primary-container shadow-xs transition-all"
+              className="px-5 py-2 rounded-lg bg-primary text-on-primary text-xs font-bold hover:bg-primary-container shadow-xs transition-all cursor-pointer"
             >
               Browse Clubs Catalogue
             </button>
@@ -163,7 +242,7 @@ export const StudentDashboardView: React.FC<StudentDashboardViewProps> = ({ user
             <p className="text-xs text-on-surface-variant text-center py-4">No registered events yet.</p>
             <button
               onClick={() => router.push('/events')}
-              className="w-full py-2 bg-surface-container-low text-primary text-xs font-bold rounded-lg hover:bg-surface-container transition-colors"
+              className="w-full py-2 bg-surface-container-low text-primary text-xs font-bold rounded-lg hover:bg-surface-container transition-colors cursor-pointer"
             >
               Browse Events
             </button>

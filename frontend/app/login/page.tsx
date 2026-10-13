@@ -37,6 +37,13 @@ export default function LoginPage() {
     clearError();
   };
 
+  const fillClubHeadCredentials = () => {
+    setIsAdminMode(false);
+    setEmail('acm.head@university.edu');
+    setPassword('SecurePassword123');
+    clearError();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
@@ -104,20 +111,29 @@ export default function LoginPage() {
                 <div className="flex items-center justify-between text-secondary-container font-bold">
                   <span>Demo Login Quick-Fill:</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-3 gap-1.5">
                   <button
                     type="button"
                     onClick={fillStudentCredentials}
-                    className={`flex-1 py-1.5 px-2 rounded font-bold transition-all ${
-                      !isAdminMode ? 'bg-white text-primary shadow-xs' : 'bg-white/10 text-white hover:bg-white/20'
+                    className={`py-1.5 px-2 rounded font-bold text-[11px] transition-all cursor-pointer ${
+                      !isAdminMode && email === 'student@university.edu' ? 'bg-white text-primary shadow-xs' : 'bg-white/10 text-white hover:bg-white/20'
                     }`}
                   >
                     Student Demo
                   </button>
                   <button
                     type="button"
+                    onClick={fillClubHeadCredentials}
+                    className={`py-1.5 px-2 rounded font-bold text-[11px] transition-all cursor-pointer ${
+                      !isAdminMode && email === 'acm.head@university.edu' ? 'bg-purple-300 text-purple-950 shadow-xs' : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    Club Head Demo
+                  </button>
+                  <button
+                    type="button"
                     onClick={fillAdminCredentials}
-                    className={`flex-1 py-1.5 px-2 rounded font-bold transition-all ${
+                    className={`py-1.5 px-2 rounded font-bold text-[11px] transition-all cursor-pointer ${
                       isAdminMode ? 'bg-rose-600 text-white shadow-xs' : 'bg-white/10 text-white hover:bg-white/20'
                     }`}
                   >
@@ -181,16 +197,16 @@ export default function LoginPage() {
               <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="space-y-1">
                   <label className="block text-xs font-bold text-on-surface" htmlFor="email">
-                    {isAdminMode ? 'Admin Email / Username' : 'Institutional Email'}
+                    {isAdminMode ? 'Admin Email / Username' : 'Institutional Email, Username, or Roll Number'}
                   </label>
                   <div className="relative flex items-center">
                     <span className="material-symbols-outlined absolute left-3 text-outline text-lg pointer-events-none">
-                      {isAdminMode ? 'admin_panel_settings' : 'alternate_email'}
+                      {isAdminMode ? 'admin_panel_settings' : 'badge'}
                     </span>
                     <input
                       className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface text-sm border border-slate-200 placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary"
                       id="email"
-                      placeholder={isAdminMode ? 'admin@university.edu or admin' : 'student@university.edu'}
+                      placeholder={isAdminMode ? 'admin@university.edu or admin' : 'student@university.edu, username, or 22BCE104'}
                       type="text"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}

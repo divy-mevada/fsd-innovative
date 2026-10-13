@@ -16,6 +16,11 @@ export const eventService = {
     return response.data;
   },
 
+  async createEvent(eventData: Partial<CampusEvent>): Promise<CampusEvent> {
+    const response = await api.post<CampusEvent>('/events', eventData);
+    return response.data;
+  },
+
   async registerForEvent(eventId: string): Promise<EventRegistration> {
     const response = await api.post<EventRegistration>(`/events/${eventId}/register`);
     return response.data;

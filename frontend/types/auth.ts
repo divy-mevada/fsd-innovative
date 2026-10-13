@@ -12,6 +12,7 @@ export interface User {
   username: string;
   full_name: string;
   email: string;
+  roll_number?: string | null;
   profile_image?: string | null;
   department?: string | null;
   year?: number | null;
@@ -26,6 +27,7 @@ export interface RegisterData {
   username?: string;
   full_name: string;
   email: string;
+  roll_number?: string;
   password: string;
   department?: string;
   year?: number;

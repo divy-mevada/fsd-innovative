@@ -14,6 +14,7 @@ export const authService = {
       username: rawUsername.toLowerCase().trim(),
       full_name: data.full_name,
       email: data.email.toLowerCase().trim(),
+      roll_number: data.roll_number?.trim().toUpperCase() || undefined,
       password: data.password,
       department: data.department || 'Computer Science',
       year: data.year || 1,
@@ -38,6 +39,8 @@ export const authService = {
   async logout(): Promise<void> {
     try {
       await api.post('/auth/logout');
+    } catch (e) {
+      console.warn('Backend logout call completed/fallback:', e);
     } finally {
       setAccessToken(null);
     }

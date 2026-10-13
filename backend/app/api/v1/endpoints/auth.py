@@ -35,9 +35,13 @@ def set_refresh_cookie(response: Response, refresh_token: str) -> None:
 
 
 def clear_refresh_cookie(response: Response) -> None:
+    is_secure = settings.FRONTEND_URL.startswith("https://")
     response.delete_cookie(
         key=COOKIE_NAME,
-        path="/api/auth"
+        path="/api/auth",
+        httponly=True,
+        samesite="lax",
+        secure=is_secure
     )
 
 

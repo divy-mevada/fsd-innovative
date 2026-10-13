@@ -10,6 +10,7 @@ class UserRegister(BaseModel):
     username: str = Field(..., min_length=3, max_length=50, description="Unique username")
     full_name: str = Field(..., min_length=2, max_length=100, description="Full name of the user")
     email: EmailStr = Field(..., description="University or personal email address")
+    roll_number: Optional[str] = Field(None, max_length=50, description="University roll number or student ID")
     password: str = Field(..., min_length=8, description="Password must be at least 8 characters long")
     department: Optional[str] = Field(None, max_length=100)
     year: Optional[int] = Field(None, ge=1, le=6, description="Academic year (1-6)")
@@ -45,6 +46,7 @@ class UserResponse(BaseModel):
     username: str
     full_name: str
     email: EmailStr
+    roll_number: Optional[str] = None
     profile_image: Optional[str] = None
     department: Optional[str] = None
     year: Optional[int] = None
@@ -86,3 +88,7 @@ class RefreshTokenInput(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+
+
+class UserRoleUpdate(BaseModel):
+    role: UserRole

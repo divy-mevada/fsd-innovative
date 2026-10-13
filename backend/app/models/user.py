@@ -57,6 +57,7 @@ class User(Base):
     username = Column(String(100), unique=True, index=True, nullable=False)
     full_name = Column(String(255), nullable=False)
     email = Column(String(255), unique=True, index=True, nullable=False)
+    roll_number = Column(String(50), unique=True, index=True, nullable=True)
     password_hash = Column(String(255), nullable=False)
     profile_image = Column(String(500), nullable=True)
     department = Column(String(100), nullable=True)

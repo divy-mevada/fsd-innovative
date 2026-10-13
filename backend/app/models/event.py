@@ -22,6 +22,7 @@ class Event(Base):
     registered_count = Column(Integer, nullable=False, default=0)
     is_free = Column(Boolean, nullable=False, default=True)
     ticket_price = Column(String(50), nullable=True, default="Free")
+    google_form_url = Column(String(500), nullable=True)
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(

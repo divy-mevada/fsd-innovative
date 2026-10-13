@@ -63,3 +63,26 @@ class ClubMemberOut(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+
+class ClubMemberDetailOut(BaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    club_id: uuid.UUID
+    full_name: str
+    email: str
+    roll_number: Optional[str] = None
+    department: Optional[str] = None
+    year: Optional[int] = None
+    role: ClubMemberRole
+    status: ClubMemberStatus
+    joined_at: datetime
+
+
+class MemberRoleUpdate(BaseModel):
+    role: ClubMemberRole
+
+
+class ClubApplyInput(BaseModel):
+    statement: Optional[str] = None
+

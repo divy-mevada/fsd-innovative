@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { User } from '@/types/auth';
+import { User, UserRole } from '@/types/auth';
 import { AddClubModal } from '@/components/AddClubModal';
 import { ManageRosterModal } from '@/components/ManageRosterModal';
 import { useClubsStore } from '@/lib/clubs-store';
+import { getStoredUsers, updateUserRole, syncUsersWithAPI, UserAccount } from '@/lib/users-store';
+import { userService } from '@/services/userService';
 
 interface AdminDashboardViewProps {
   user: User | null;
@@ -16,6 +18,59 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ user }) 
   const { clubs, refreshClubs } = useClubsStore();
   const [isAddClubOpen, setIsAddClubOpen] = useState(false);
   const [selectedRosterClub, setSelectedRosterClub] = useState<{ id: string; name: string } | null>(null);
+
+  // System Users state for Roll Number search & role management
+  const [userAccounts, setUserAccounts] = useState<UserAccount[]>([]);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [updateMessage, setUpdateMessage] = useState<string | null>(null);
+
+  const loadUsers = useCallback(() => {
+    const localUsers = getStoredUsers();
+    setUserAccounts(localUsers);
+    syncUsersWithAPI().then((latest) => {
+      setUserAccounts(latest);
+    });
+  }, []);
+
+  useEffect(() => {
+    loadUsers();
+    const handleUserUpdate = () => {
+      setUserAccounts(getStoredUsers());
+    };
+    window.addEventListener('campusclub_users_updated', handleUserUpdate);
+    return () => {
+      window.removeEventListener('campusclub_users_updated', handleUserUpdate);
+    };
+  }, [loadUsers]);
+
+  const handleRoleChange = async (targetUser: UserAccount, newRole: UserRole) => {
+    updateUserRole(targetUser.id, newRole);
+
+    // Call backend API if user has a persistent UUID
+    if (targetUser.id && !targetUser.id.startsWith('u_')) {
+      try {
+        await userService.updateUserRole(targetUser.id, newRole);
+      } catch (err) {
+        console.warn('API role sync fallback:', err);
+      }
+    }
+
+    setUpdateMessage(`Updated ${targetUser.full_name}'s system role to ${newRole}`);
+    setTimeout(() => setUpdateMessage(null), 3500);
+    loadUsers();
+  };
+
+  const filteredUsers = userAccounts.filter((u) => {
+    if (!userSearchQuery.trim()) return true;
+    const q = userSearchQuery.toLowerCase();
+    return (
+      u.full_name.toLowerCase().includes(q) ||
+      u.email.toLowerCase().includes(q) ||
+      u.username.toLowerCase().includes(q) ||
+      u.department.toLowerCase().includes(q) ||
+      (u.roll_number && u.roll_number.toLowerCase().includes(q))
+    );
+  });
 
   return (
     <div className="flex flex-col w-full pb-space-xl space-y-6">
@@ -32,7 +87,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ user }) 
           </h1>
 
           <p className="text-xs sm:text-sm text-red-100/90 max-w-xl leading-relaxed">
-            Manage university club charters, assign executive/head roles, search student accounts, and oversee official external portals.
+            Manage university club charters, assign executive/head roles, search student accounts by Roll Number, and oversee official external portals.
           </p>
 
           <div className="flex items-center gap-3 pt-2">
@@ -68,11 +123,11 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ user }) 
 
         <div className="bg-surface-container-lowest rounded-xl p-4 border border-slate-100 shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Total Users</span>
-            <div className="text-2xl font-extrabold text-blue-700 mt-1">430</div>
+            <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Registered Accounts</span>
+            <div className="text-2xl font-extrabold text-blue-700 mt-1">{userAccounts.length}</div>
           </div>
           <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-            <span className="material-symbols-outlined">person</span>
+            <span className="material-symbols-outlined">group</span>
           </div>
         </div>
 
@@ -97,12 +152,138 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ user }) 
         </div>
       </section>
 
-      {/* Main Roster & Governance Table */}
+      {/* SECTION 1: User Directory, Roll Number Search & System Role Assignment */}
+      <div className="bg-surface-container-lowest p-6 rounded-2xl border border-slate-100 shadow-xs space-y-4">
+        {updateMessage && (
+          <div className="p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-bold flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm">check_circle</span>
+            <span>{updateMessage}</span>
+          </div>
+        )}
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div>
+            <h3 className="text-base font-bold text-on-surface flex items-center gap-2">
+              <span className="material-symbols-outlined text-red-600">badge</span>
+              <span>Student Roll Number Directory & Global Role Governance</span>
+            </h3>
+            <p className="text-xs text-on-surface-variant">
+              Search registered users by Roll Number, Email, or Name to manage system-wide authority.
+            </p>
+          </div>
+
+          {/* Search Box */}
+          <div className="relative min-w-[260px]">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+              search
+            </span>
+            <input
+              type="text"
+              placeholder="Search by Roll No, Name, Email..."
+              value={userSearchQuery}
+              onChange={(e) => setUserSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-on-surface focus:ring-2 focus:ring-red-500 focus:outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200 text-xs font-bold text-outline uppercase tracking-wider bg-surface-container-low">
+                <th className="p-3">User / Student</th>
+                <th className="p-3">Roll Number</th>
+                <th className="p-3">Email & Dept</th>
+                <th className="p-3">Current System Role</th>
+                <th className="p-3 text-right">Assign System Role</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-xs">
+              {filteredUsers.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="p-6 text-center text-slate-400 italic">
+                    No users matching "{userSearchQuery}"
+                  </td>
+                </tr>
+              ) : (
+                filteredUsers.map((account) => {
+                  const roleBadgeColors: Record<UserRole, string> = {
+                    ADMIN: 'bg-purple-100 text-purple-800 border-purple-200',
+                    CLUB_HEAD: 'bg-amber-100 text-amber-800 border-amber-200',
+                    EXECUTIVE: 'bg-blue-100 text-blue-800 border-blue-200',
+                    CLUB_MEMBER: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                    STUDENT: 'bg-slate-100 text-slate-700 border-slate-200'
+                  };
+
+                  return (
+                    <tr key={account.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="p-3 font-bold text-on-surface">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-700 font-bold flex items-center justify-center text-xs">
+                            {account.full_name[0] || 'U'}
+                          </div>
+                          <div>
+                            <div>{account.full_name}</div>
+                            <div className="text-[10px] text-slate-400 font-normal">@{account.username}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        {account.roll_number ? (
+                          <span className="inline-flex items-center gap-1 font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                            <span className="material-symbols-outlined text-xs text-slate-400">pin</span>
+                            {account.roll_number}
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 italic text-[11px]">N/A (Staff/Admin)</span>
+                        )}
+                      </td>
+                      <td className="p-3 text-on-surface-variant">
+                        <div>{account.email}</div>
+                        <div className="text-[10px] text-slate-400">
+                          {account.department} • Year {account.year}
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
+                            roleBadgeColors[account.role] || roleBadgeColors.STUDENT
+                          }`}
+                        >
+                          {account.role}
+                        </span>
+                      </td>
+                      <td className="p-3 text-right">
+                        <select
+                          value={account.role}
+                          onChange={(e) => handleRoleChange(account, e.target.value as UserRole)}
+                          className="px-2 py-1 bg-white border border-slate-200 rounded text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-red-500 cursor-pointer"
+                        >
+                          <option value="STUDENT">STUDENT</option>
+                          <option value="CLUB_MEMBER">CLUB MEMBER</option>
+                          <option value="EXECUTIVE">EXECUTIVE</option>
+                          <option value="CLUB_HEAD">CLUB HEAD</option>
+                          <option value="ADMIN">SYSTEM ADMIN</option>
+                        </select>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* SECTION 2: Main Roster & Governance Table for Clubs */}
       <div className="bg-surface-container-lowest p-6 rounded-2xl border border-slate-100 shadow-xs space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
-            <h3 className="text-base font-bold text-on-surface">Campus Club Roster & Role Governance</h3>
-            <p className="text-xs text-on-surface-variant">Edit club officers, assign club heads, or update student roles</p>
+            <h3 className="text-base font-bold text-on-surface flex items-center gap-2">
+              <span className="material-symbols-outlined text-red-600">domain</span>
+              <span>Campus Club Roster & Role Governance</span>
+            </h3>
+            <p className="text-xs text-on-surface-variant">Edit club officers, assign club heads, or view roster</p>
           </div>
           <button
             onClick={() => setIsAddClubOpen(true)}
@@ -197,3 +378,4 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({ user }) 
     </div>
   );
 };
+

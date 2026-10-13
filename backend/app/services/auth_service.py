@@ -20,6 +20,16 @@ class AuthService:
                 detail="A user with this email address already exists. Please login instead."
             )
 
+        # Check unique roll number if provided
+        if user_in.roll_number:
+            clean_roll = user_in.roll_number.upper().strip()
+            existing_roll = user_repository.get_by_roll_number(db, roll_number=clean_roll)
+            if existing_roll:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail=f"A user with roll number '{clean_roll}' is already registered."
+                )
+
         # Check unique username, auto-resolve collision if username is taken
         base_username = (user_in.username or user_in.email.split("@")[0]).lower().strip()
         final_username = base_username

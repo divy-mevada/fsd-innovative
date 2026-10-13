@@ -18,6 +18,7 @@ class EventCreate(BaseModel):
     capacity: int = Field(100, ge=1)
     is_free: bool = True
     ticket_price: Optional[str] = "Free"
+    google_form_url: Optional[str] = Field(None, max_length=500, description="External registration form (e.g. Google Form)")
 
 
 class EventUpdate(BaseModel):
@@ -31,6 +32,7 @@ class EventUpdate(BaseModel):
     capacity: Optional[int] = Field(None, ge=1)
     is_free: Optional[bool] = None
     ticket_price: Optional[str] = None
+    google_form_url: Optional[str] = Field(None, max_length=500)
     is_active: Optional[bool] = None
 
 
@@ -49,6 +51,7 @@ class EventOut(BaseModel):
     registered_count: int
     is_free: bool
     ticket_price: Optional[str] = "Free"
+    google_form_url: Optional[str] = None
     is_active: bool
     created_at: datetime
     updated_at: datetime

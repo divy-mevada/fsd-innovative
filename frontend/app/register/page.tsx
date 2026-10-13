@@ -11,6 +11,7 @@ export default function RegisterPage() {
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [rollNumber, setRollNumber] = useState('');
   const [password, setPassword] = useState('');
   const [department, setDepartment] = useState('');
   const [year, setYear] = useState<number | ''>(1);
@@ -19,6 +20,7 @@ export default function RegisterPage() {
   const [fieldErrors, setFieldErrors] = useState<{
     full_name?: string;
     email?: string;
+    roll_number?: string;
     password?: string;
   }>({});
 
@@ -29,6 +31,8 @@ export default function RegisterPage() {
 
     if (!email.trim()) errors.email = 'Institutional email is required.';
     else if (!/\S+@\S+\.\S+/.test(email)) errors.email = 'Enter a valid campus email address.';
+
+    if (!rollNumber.trim()) errors.roll_number = 'Campus Roll Number / Student ID is required.';
 
     if (!password) {
       errors.password = 'Password is required.';
@@ -51,6 +55,7 @@ export default function RegisterPage() {
       await register({
         full_name: fullName,
         email: email,
+        roll_number: rollNumber,
         password: password,
         department: department || undefined,
         year: year ? Number(year) : undefined,
@@ -211,6 +216,29 @@ export default function RegisterPage() {
                     </div>
                     {fieldErrors.email && (
                       <span className="block font-label-sm text-label-sm text-error">{fieldErrors.email}</span>
+                    )}
+                  </div>
+
+                  <div className="space-y-space-xs">
+                    <label className="block font-label-md text-label-md font-semibold text-on-surface" htmlFor="roll-number">
+                      Roll Number / Student ID *
+                    </label>
+                    <div className="relative flex items-center">
+                      <span className="material-symbols-outlined absolute left-3 text-outline text-lg pointer-events-none">
+                        badge
+                      </span>
+                      <input
+                        className="w-full pl-10 pr-3 py-2.5 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm shadow-sm border border-slate-200 placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-colors uppercase"
+                        id="roll-number"
+                        placeholder="22BCE104"
+                        type="text"
+                        value={rollNumber}
+                        onChange={(e) => setRollNumber(e.target.value)}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    {fieldErrors.roll_number && (
+                      <span className="block font-label-sm text-label-sm text-error">{fieldErrors.roll_number}</span>
                     )}
                   </div>
 

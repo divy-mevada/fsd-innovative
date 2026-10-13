@@ -9,6 +9,26 @@ from app.db.session import engine, Base
 # Create tables automatically on startup (for quick local setup & SQLite dev)
 Base.metadata.create_all(bind=engine)
 
+# Ensure roll_number column exists in users table for SQLite dev
+from sqlalchemy import text, inspect
+try:
+    with engine.connect() as conn:
+        inspector = inspect(engine)
+        if "users" in inspector.get_table_names():
+            columns = [col["name"] for col in inspector.get_columns("users")]
+            if "roll_number" not in columns:
+                conn.execute(text("ALTER TABLE users ADD COLUMN roll_number VARCHAR(50)"))
+                conn.commit()
+                print("✓ Added roll_number column to users table.")
+        if "events" in inspector.get_table_names():
+            ev_columns = [col["name"] for col in inspector.get_columns("events")]
+            if "google_form_url" not in ev_columns:
+                conn.execute(text("ALTER TABLE events ADD COLUMN google_form_url VARCHAR(500)"))
+                conn.commit()
+                print("✓ Added google_form_url column to events table.")
+except Exception as e:
+    print(f"Notice: SQLite column check: {e}")
+
 # Seed initial admin user if not exists
 from app.db.session import SessionLocal
 from app.db.init_db import init_db

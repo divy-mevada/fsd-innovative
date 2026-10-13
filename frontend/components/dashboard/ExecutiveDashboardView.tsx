@@ -3,10 +3,15 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User } from '@/types/auth';
+import { ClubChatWidget } from '@/components/ClubChatWidget';
+import { ClubEventsSection } from '@/components/ClubEventsSection';
+
+import { useClubsStore } from '@/lib/clubs-store';
 
 interface ExecutiveDashboardViewProps {
   user: User | null;
   clubName?: string;
+  clubId?: string;
 }
 
 interface TaskItem {
@@ -22,8 +27,13 @@ const INITIAL_TASKS: TaskItem[] = [
   { id: '3', title: 'Review Pending Member Applications', category: 'Membership', status: 'todo' },
 ];
 
-export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({ user, clubName = 'CSI Chapter' }) => {
+export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({ user, clubName = 'CSI Chapter', clubId }) => {
   const router = useRouter();
+  const { clubs } = useClubsStore();
+  const matchedClub = clubs.find(
+    (c) => c.name.toLowerCase() === clubName.toLowerCase() || c.id.toLowerCase() === (clubId || '').toLowerCase()
+  );
+  const effectiveClubId = clubId || matchedClub?.id || clubName.toLowerCase().replace(/[^a-z0-9]+/g, '_');
   const [tasks, setTasks] = useState<TaskItem[]>(INITIAL_TASKS);
   const [pendingApplicants, setPendingApplicants] = useState([
     { id: 'app-1', name: 'Rohan Sharma', dept: 'Computer Science', year: 2 },
@@ -205,7 +215,7 @@ export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({ 
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => handleApproveApplicant(app.id)}
-                        className="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[11px]"
+                        className="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[11px] cursor-pointer"
                       >
                         Approve
                       </button>
@@ -217,6 +227,28 @@ export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({ 
           </div>
         </div>
       </div>
+
+      {/* Club Events & Workshops Management Section for Executives */}
+      <section className="space-y-3 pt-4">
+        <ClubEventsSection
+          clubId={effectiveClubId}
+          clubName={clubName}
+          userRole={user?.role || 'EXECUTIVE'}
+          canAddEvent={true}
+        />
+      </section>
+
+      {/* Club Chat Widget Section */}
+      <section className="space-y-3 pt-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-amber-700 text-xl">forum</span>
+            <h2 className="text-lg font-bold text-on-surface">Executive Team Chat & Channel Communication</h2>
+          </div>
+          <span className="text-xs text-on-surface-variant">Real-time workspace</span>
+        </div>
+        <ClubChatWidget clubId={effectiveClubId} clubName={clubName} currentUser={user} />
+      </section>
     </div>
   );
 };

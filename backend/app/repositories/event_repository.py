@@ -48,6 +48,7 @@ class EventRepository:
             capacity=event_in.capacity,
             is_free=event_in.is_free,
             ticket_price=event_in.ticket_price,
+            google_form_url=event_in.google_form_url.strip() if event_in.google_form_url else None,
             is_active=True
         )
         db.add(db_event)

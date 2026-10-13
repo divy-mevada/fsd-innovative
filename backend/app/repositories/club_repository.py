@@ -96,5 +96,179 @@ class ClubRepository:
         db.refresh(membership)
         return membership
 
+    @staticmethod
+    def apply_to_club(db: Session, user_id: uuid.UUID, club_id: uuid.UUID) -> ClubMember:
+        existing = db.query(ClubMember).filter(
+            ClubMember.user_id == user_id,
+            ClubMember.club_id == club_id
+        ).first()
+
+        if existing:
+            return existing
+
+        membership = ClubMember(
+            user_id=user_id,
+            club_id=club_id,
+            role=ClubMemberRole.MEMBER,
+            status=ClubMemberStatus.PENDING
+        )
+        db.add(membership)
+        db.commit()
+        db.refresh(membership)
+        return membership
+
+    @staticmethod
+    def get_pending_applications(db: Session, club_id: uuid.UUID):
+        members = db.query(ClubMember).filter(
+            ClubMember.club_id == club_id,
+            ClubMember.status == ClubMemberStatus.PENDING
+        ).all()
+        result = []
+        for m in members:
+            from app.models.user import User
+            user = db.query(User).filter(User.id == m.user_id).first()
+            if user:
+                result.append({
+                    "id": m.id,
+                    "user_id": m.user_id,
+                    "club_id": m.club_id,
+                    "full_name": user.full_name,
+                    "email": user.email,
+                    "roll_number": user.roll_number,
+                    "department": user.department,
+                    "year": user.year,
+                    "role": m.role,
+                    "status": m.status,
+                    "joined_at": m.joined_at,
+                })
+        return result
+
+    @staticmethod
+    def accept_application(db: Session, member_id: uuid.UUID) -> Optional[ClubMember]:
+        from app.models.user import User, UserRole
+        membership = db.query(ClubMember).filter(ClubMember.id == member_id).first()
+        if not membership:
+            return None
+        membership.status = ClubMemberStatus.ACTIVE
+        
+        # Increment club member count
+        club = db.query(Club).filter(Club.id == membership.club_id).first()
+        if club:
+            club.member_count += 1
+            db.add(club)
+
+        # Update user role to CLUB_MEMBER if currently STUDENT
+        user = db.query(User).filter(User.id == membership.user_id).first()
+        if user and user.role == UserRole.STUDENT:
+            user.role = UserRole.CLUB_MEMBER
+            db.add(user)
+
+        db.commit()
+        db.refresh(membership)
+        return membership
+
+    @staticmethod
+    def reject_application(db: Session, member_id: uuid.UUID) -> Optional[ClubMember]:
+        membership = db.query(ClubMember).filter(ClubMember.id == member_id).first()
+        if not membership:
+            return None
+        membership.status = ClubMemberStatus.REJECTED
+        db.commit()
+        db.refresh(membership)
+        return membership
+
+    @staticmethod
+    def get_club_members(db: Session, club_id: uuid.UUID):
+        members = db.query(ClubMember).filter(
+            ClubMember.club_id == club_id,
+            ClubMember.status == ClubMemberStatus.ACTIVE
+        ).all()
+        result = []
+        for m in members:
+            from app.models.user import User
+            user = db.query(User).filter(User.id == m.user_id).first()
+            if user:
+                result.append({
+                    "id": m.id,
+                    "user_id": m.user_id,
+                    "club_id": m.club_id,
+                    "full_name": user.full_name,
+                    "email": user.email,
+                    "roll_number": user.roll_number,
+                    "department": user.department,
+                    "year": user.year,
+                    "role": m.role,
+                    "status": m.status,
+                    "joined_at": m.joined_at,
+                })
+        return result
+
+    @staticmethod
+    def update_member_role(db: Session, club_id: uuid.UUID, user_id: uuid.UUID, new_role: ClubMemberRole) -> Optional[ClubMember]:
+        from app.models.user import User, UserRole
+        membership = db.query(ClubMember).filter(
+            ClubMember.club_id == club_id,
+            ClubMember.user_id == user_id
+        ).first()
+        if not membership:
+            return None
+        membership.role = new_role
+
+        user = db.query(User).filter(User.id == user_id).first()
+        if user and user.role != UserRole.ADMIN:
+            if new_role == ClubMemberRole.EXECUTIVE:
+                user.role = UserRole.EXECUTIVE
+            elif new_role == ClubMemberRole.CLUB_HEAD:
+                user.role = UserRole.CLUB_HEAD
+            elif new_role == ClubMemberRole.MEMBER:
+                other_exec = db.query(ClubMember).filter(
+                    ClubMember.user_id == user_id,
+                    ClubMember.club_id != club_id,
+                    ClubMember.status == ClubMemberStatus.ACTIVE,
+                    ClubMember.role.in_([ClubMemberRole.EXECUTIVE, ClubMemberRole.CLUB_HEAD])
+                ).first()
+                if not other_exec:
+                    user.role = UserRole.CLUB_MEMBER
+            db.add(user)
+
+        db.commit()
+        db.refresh(membership)
+        return membership
+
+    @staticmethod
+    def remove_member(db: Session, club_id: uuid.UUID, user_id: uuid.UUID) -> bool:
+        from app.models.user import User, UserRole
+        membership = db.query(ClubMember).filter(
+            ClubMember.club_id == club_id,
+            ClubMember.user_id == user_id
+        ).first()
+        if not membership:
+            return False
+
+        was_active = membership.status == ClubMemberStatus.ACTIVE
+        db.delete(membership)
+
+        if was_active:
+            club = db.query(Club).filter(Club.id == club_id).first()
+            if club and club.member_count > 0:
+                club.member_count -= 1
+                db.add(club)
+
+        remaining = db.query(ClubMember).filter(
+            ClubMember.user_id == user_id,
+            ClubMember.status == ClubMemberStatus.ACTIVE
+        ).all()
+
+        user = db.query(User).filter(User.id == user_id).first()
+        if user and user.role != UserRole.ADMIN:
+            if not remaining:
+                user.role = UserRole.STUDENT
+            elif not any(m.role in [ClubMemberRole.EXECUTIVE, ClubMemberRole.CLUB_HEAD] for m in remaining):
+                user.role = UserRole.CLUB_MEMBER
+            db.add(user)
+
+        db.commit()
+        return True
+
 
 club_repository = ClubRepository()

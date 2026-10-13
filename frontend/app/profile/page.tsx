@@ -99,6 +99,10 @@ export default function ProfilePage() {
             <CardContent className="pt-4 space-y-3 text-xs">
               <div className="p-3 rounded-lg bg-slate-50 space-y-2">
                 <div className="flex justify-between">
+                  <span className="text-slate-500">Roll Number:</span>
+                  <span className="font-semibold text-slate-800 font-mono">{user?.roll_number || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-slate-500">Department:</span>
                   <span className="font-semibold text-slate-800">{user?.department || 'N/A'}</span>
                 </div>
