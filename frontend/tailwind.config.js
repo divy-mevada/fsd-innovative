@@ -77,6 +77,8 @@ module.exports = {
         "margin-mobile": "1rem"
       },
       fontFamily: {
+        "mono": ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
+        "sans": ["Inter", "Plus Jakarta Sans", "system-ui", "sans-serif"],
         "headline-md": ["Plus Jakarta Sans", "sans-serif"],
         "body-lg": ["Inter", "sans-serif"],
         "display-mobile": ["Plus Jakarta Sans", "sans-serif"],
